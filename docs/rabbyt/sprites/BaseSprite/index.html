@@ -1,0 +1,190 @@
+<html>
+<head>
+<title>BaseSprite - Rabbyt Reference</title>
+</head>
+<body>
+
+<a href="../../../rabbyt/">Documentation Index</a> | From module <a href="../../../rabbyt/sprites/">rabbyt.sprites</a>.
+<h1>BaseSprite</h1>
+
+
+
+<p><tt class="docutils literal"><span class="pre">BaseSprite(...)</span></tt></p>
+<p>This class provides some basic functionality for sprites:</p>
+<ul class="simple">
+<li>transformations (x, y, rot, scale)</li>
+<li>color (red, green, blue, alpha)</li>
+<li>bounding_radius (for collision detection)</li>
+</ul>
+<p><tt class="docutils literal"><span class="pre">BaseSprite</span></tt> doesn't render anything itself  You'll want to subclass it
+and override either <tt class="docutils literal"><span class="pre">render()</span></tt> or <tt class="docutils literal"><span class="pre">render_after_transform()</span></tt>.</p>
+<p>You can pass any of the <tt class="docutils literal"><span class="pre">BaseSprite</span></tt> properties as keyword arguments.
+(<tt class="docutils literal"><span class="pre">x</span></tt>, <tt class="docutils literal"><span class="pre">y</span></tt>, <tt class="docutils literal"><span class="pre">xy</span></tt>, etc.)</p>
+
+
+
+<div class="section">
+<h2>Methods</h2>
+
+<div class="section">
+    <h3>attrgetter</h3>
+    <p><tt class="docutils literal"><span class="pre">attrgetter(name)</span></tt></p>
+<p>Returns an anim that returns the value of the given attribute name.</p>
+<p>Perhaps this is easiest to see with an example.  The following two lines
+will both do the same thing, only the second is much, much faster:</p>
+<blockquote>
+<div class="highlight"><pre><span class="n">sprite</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="k">lambda</span><span class="p">:</span> <span class="n">other_sprite</span><span class="o">.</span><span class="n">x</span>
+
+<span class="n">sprite</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="n">other_sprite</span><span class="o">.</span><span class="n">attrgetter</span><span class="p">(</span><span class="s">&quot;x&quot;</span><span class="p">)</span>
+</pre></div>
+</blockquote>
+<p>The anim returned by attrgetter is implemented in C and will retrieve
+the value without doing a python attribute lookup.</p>
+<p>This works for any attribute that you can assign an anim to.</p>
+<p><tt class="docutils literal"><span class="pre">swizzle</span></tt> descriptors are properly handled.</p>
+
+</div>
+
+<div class="section">
+    <h3>convert_offset</h3>
+    <p><tt class="docutils literal"><span class="pre">convert_offset((x,</span> <span class="pre">y))</span> <span class="pre">-&gt;</span> <span class="pre">(x,</span> <span class="pre">y)</span></tt></p>
+<p>Converts coordinates relative to this sprite to global coordinates,
+including rotation and scaling.</p>
+
+</div>
+
+<div class="section">
+    <h3>render</h3>
+    <p><tt class="docutils literal"><span class="pre">render()</span></tt></p>
+<p>Renders the sprite.</p>
+<p>By default, this method will transform the OpenGL modelview matrix
+according to <tt class="docutils literal"><span class="pre">x</span></tt>, <tt class="docutils literal"><span class="pre">y</span></tt>, <tt class="docutils literal"><span class="pre">scale</span></tt>, and <tt class="docutils literal"><span class="pre">rot</span></tt>, and call
+<tt class="docutils literal"><span class="pre">render_after_transform()</span></tt>.</p>
+<p>If you want transformations to be handled for you, leave this method and
+override <tt class="docutils literal"><span class="pre">render_after_transform()</span></tt>.  Otherwise, override
+<tt class="docutils literal"><span class="pre">render()</span></tt>.</p>
+
+</div>
+
+<div class="section">
+    <h3>render_after_transform</h3>
+    <p><tt class="docutils literal"><span class="pre">render_after_transform()</span></tt></p>
+<p>This method is called by <tt class="docutils literal"><span class="pre">BaseSprite.render()</span></tt> after transformations
+have been applied.</p>
+<p>If you don't want to mess with doing transformations yourself, you can
+override this method instead of <tt class="docutils literal"><span class="pre">render()</span></tt>.</p>
+
+</div>
+
+</div>
+
+
+
+<div class="section">
+<h2>Properties</h2>
+
+<div class="section">
+    <h3>alpha</h3>
+    <p>alpha color component</p>
+
+</div>
+
+<div class="section">
+    <h3>blue</h3>
+    <p>blue color component</p>
+
+</div>
+
+<div class="section">
+    <h3>bounding_radius</h3>
+    <p>bounding_radius</p>
+<p>This should be the distance of the farthest point from the center.  It
+can be used for collision detection.</p>
+
+</div>
+
+<div class="section">
+    <h3>bounding_radius_squared</h3>
+    <p>bounding_radius_squared</p>
+<p>This is just like <tt class="docutils literal"><span class="pre">bounding_radius</span></tt>, only it's squared.  (duh)</p>
+<p><tt class="docutils literal"><span class="pre">bounding_radius</span></tt> and <tt class="docutils literal"><span class="pre">bounding_radius_squared</span></tt> are automatically
+kept in sync with each other.</p>
+
+</div>
+
+<div class="section">
+    <h3>green</h3>
+    <p>green color component</p>
+
+</div>
+
+<div class="section">
+    <h3>red</h3>
+    <p>red color component</p>
+
+</div>
+
+<div class="section">
+    <h3>rgb</h3>
+    <p>swizzle for <tt class="docutils literal"><span class="pre">red</span></tt>, <tt class="docutils literal"><span class="pre">green</span></tt>, <tt class="docutils literal"><span class="pre">blue</span></tt></p>
+
+</div>
+
+<div class="section">
+    <h3>rgba</h3>
+    <p>swizzle for <tt class="docutils literal"><span class="pre">red</span></tt>, <tt class="docutils literal"><span class="pre">green</span></tt>, <tt class="docutils literal"><span class="pre">blue</span></tt>, <tt class="docutils literal"><span class="pre">alpha</span></tt></p>
+
+</div>
+
+<div class="section">
+    <h3>rot</h3>
+    <p>rotation angle in degrees.</p>
+
+</div>
+
+<div class="section">
+    <h3>scale</h3>
+    <p>scale</p>
+<p><tt class="docutils literal"><span class="pre">1.0</span></tt> is normal size; <tt class="docutils literal"><span class="pre">0.5</span></tt> is half size, <tt class="docutils literal"><span class="pre">2.0</span></tt> is double
+size... you get the point.</p>
+<p>You can scale the x and y axes independently by assigning a tuple with
+a length of two.</p>
+
+</div>
+
+<div class="section">
+    <h3>scale_x</h3>
+    <p>x component of <tt class="docutils literal"><span class="pre">scale</span></tt></p>
+
+</div>
+
+<div class="section">
+    <h3>scale_y</h3>
+    <p>y component of <tt class="docutils literal"><span class="pre">scale</span></tt></p>
+
+</div>
+
+<div class="section">
+    <h3>x</h3>
+    <p>x coordinate of the sprite</p>
+
+</div>
+
+<div class="section">
+    <h3>xy</h3>
+    <p>swizzle for <tt class="docutils literal"><span class="pre">x</span></tt>, <tt class="docutils literal"><span class="pre">y</span></tt></p>
+
+</div>
+
+<div class="section">
+    <h3>y</h3>
+    <p>y coordinate of the sprite</p>
+
+</div>
+
+</div>
+
+
+
+</body>
+</html>

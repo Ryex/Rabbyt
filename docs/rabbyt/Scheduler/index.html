@@ -1,0 +1,45 @@
+<html>
+<head>
+<title>Scheduler - Rabbyt Reference</title>
+</head>
+<body>
+
+<a href="../../rabbyt/">Documentation Index</a> | From module <a href="../../rabbyt/">rabbyt</a>.
+<h1>Scheduler</h1>
+
+
+
+<p><tt class="docutils literal"><span class="pre">Scheduler()</span></tt></p>
+<p>Scheduler provides... (wait for it...)  scheduling!</p>
+<p>You may create your own scheduler instances, or use the default
+<tt class="docutils literal"><span class="pre">rabbyt.scheduler</span></tt></p>
+
+
+
+<div class="section">
+<h2>Methods</h2>
+
+<div class="section">
+    <h3>add</h3>
+    <p><tt class="docutils literal"><span class="pre">add(time,</span> <span class="pre">callback)</span></tt></p>
+<p>Schedules a <tt class="docutils literal"><span class="pre">callback</span></tt> to be called at a given <tt class="docutils literal"><span class="pre">time</span></tt>.</p>
+
+</div>
+
+<div class="section">
+    <h3>pump</h3>
+    <p><tt class="docutils literal"><span class="pre">pump([time])</span></tt></p>
+<p>Calls all callbacks that have been scheduled for before <tt class="docutils literal"><span class="pre">time</span></tt>.</p>
+<p>If <tt class="docutils literal"><span class="pre">time</span></tt> is not given, the value returned by <tt class="docutils literal"><span class="pre">rabbyt.get_time()</span></tt>
+will be used.</p>
+
+</div>
+
+</div>
+
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,3 @@
+LIBRARY _rabbyt.pyd
+EXPORTS
+PyInit__rabbyt

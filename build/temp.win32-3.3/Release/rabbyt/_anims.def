@@ -1,0 +1,3 @@
+LIBRARY _anims.pyd
+EXPORTS
+PyInit__anims

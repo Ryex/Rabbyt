@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block title %}{{class.name}} - Rabbyt Reference{% endblock %}
+
+{% block content %}
+<a href="{{relative_base}}{{base_url}}rabbyt/">Documentation Index</a> | From module <a href="{{relative_base}}{{class.module.get_absolute_url}}">{{class.module.name}}</a>.
+<h1>{{class.name}}</h1>
+
+{% if class.bases %}
+Inherits from: {% for b in class.bases %}<a href="{{relative_base}}{{b.get_absolute_url}}">{{ b.name }}</a>{% endfor %}
+{% endif %}
+
+{{class.doc|restructuredtext}}
+
+{% if class.methods %}
+<div class="section">
+<h2>Methods</h2>
+{% for m in class.methods %}
+<div class="section">
+    <h3>{{m.name}}</h3>
+    {{m.doc|restructuredtext}}
+</div>
+{% endfor %}
+</div>
+{% endif %}
+
+{% if class.properties %}
+<div class="section">
+<h2>Properties</h2>
+{% for p in class.properties %}
+<div class="section">
+    <h3>{{p.name}}</h3>
+    {{p.doc|restructuredtext}}
+</div>
+{% endfor %}
+</div>
+{% endif %}
+
+{% endblock %}

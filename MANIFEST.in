@@ -1,0 +1,14 @@
+include README
+include COPYING
+include THANKS
+include INSTALL
+include CHANGELOG
+include examples/COPYING
+recursive-include examples *.png
+recursive-include examples *.py
+recursive-include rabbyt *.pxd
+recursive-include rabbyt *.c
+recursive-include rabbyt *.h
+recursive-include docs *.html
+recursive-include docs *.py
+recursive-include tests *.py

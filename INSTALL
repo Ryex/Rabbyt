@@ -1,0 +1,42 @@
+Quick answer
+------------
+
+run "easy_install Rabbyt"
+
+On windows you can also grab the installer from the cheeseshop__.
+
+__ http://cheeseshop.python.org/pypi/Rabbyt/
+
+
+Compiling from source
+---------------------
+
+If for some reason easy_install doesn't work, or you just don't want to use it,
+you can compile from source.  You will need the following:
+
+  * setuptools
+  * A c compiler (such as gcc or mingw)
+  * Python development headers
+  * Opengl development headers (gl.h and glu.h)
+
+Run "python setup.py install" to build and install it.  (You will need write
+permisions for the installation location.)
+
+
+Compiling on Windows
+--------------------
+
+Hopefully you won't need to do this.  I'm just writing some notes here for my
+own reference.
+
+ 1. Install python2.5, and mingw
+
+ 2. Make sure that the python and mingw binaries are on the system PATH.
+    (Change it at My Computer(right click)->Properties->Advanced->Environment
+    Variables ... reopen the command prompt for changes to take effect.)
+
+ 3. Build rabbyt with "python setup.py build -c mingw32"
+
+ 4. Run "python setup.py bdist_egg" and "python setup.py bdist_wininst" to make
+    the egg and installer.
+

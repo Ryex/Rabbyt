@@ -1,0 +1,222 @@
+Version 0.8.3
+-------------
+
+* Fixed Sprite.left (etc.) incorrectly applying independant axis scaling to
+  absolute coords instead of rotated relative to the sprite.
+
+* Sprite.bounding_radius now reflects Sprite.scale.  (previously ignored.)
+
+* Fixed a segfault when anims have circular dependencies.
+
+* Optimized ``swizzle``.
+
+* Fixed ``aabb_collide()`` not always reporting immediately overlapping rects.
+
+* Fixed a memory leak caused by an extra underscore at the end of ``__dealloc___``
+
+Version 0.8.2
+-------------
+
+* Removed deprecated fonts and vertexarrays modules.
+
+* Fixed various problems with the Quad class's properties.
+
+* Fixed problems compiling with new versions of pyrex.
+
+Version 0.8.1
+-------------
+
+* Added ``collide_groups()``, ``aabb_collide_groups()``,
+  and ``aabb_collide_single()`` functions.
+
+* Fixed using sequences of anims with ``chain``.
+
+* Fixed a potential segmentation fault when aabb_collide is given invalid rects.
+
+* Added support for unary operators to anims.
+
+
+Version 0.8
+-----------
+
+* The ``anims`` module has been rewritten with various new functionality,
+  including:
+
+    + You can now use anims with your own classes by subclassing ``Animable``.
+
+    + Added ``ease``, ``ease_in``, and ``ease_out`` anims.
+
+    + Added support for chaining anims sequentially without using a scheduler.
+
+    + ``AnimPointer`` added for reading from a memory address.
+
+    + ``start`` and ``end`` argments for ``lerp`` etc. can now be anims.
+
+* Added ``aabb_collide()`` function for doing bounding box collision.
+
+* Removed the ``chipmunkglue`` module -- it's no longer needed for integrating
+  with chipmunk.  (See the example for the new way to do it using
+  ``AnimPointer``.)
+
+* ``__import__()`` is now used for importing pyglet and pygame, so blacklists
+  aren't needed for tools like py2exe.
+
+* Deprecated ``init_display`` function.
+
+* Deprecated ``fonts`` module and ``vertexarrays`` module.
+
+* Windows binaries are finally compiled with -O3.  (I found the troublesome 
+  optimization.)
+
+Version 0.7.6
+-------------
+
+* Added ``pyglet_load_texture`` for using pyglet instead of pygame.  (Which one
+  to use is autodetected.)
+
+* Added ``Sprite.texture`` property, which accepts pyglet textures as well
+  as filenames.
+
+* Assigning a 12-tuple to ``Sprite.tex_shape`` is now converted from the
+  format used by pyglet's ``tex_coords`` texture attribute.
+
+* Added ``Quad`` class, to make ``Sprite.shape`` and ``Sprite.tex_shape``
+  nicer.
+
+* Added a workaround to make setuptools work with Pyrex 0.9.6.3.
+
+* Added ``collide_single()`` function for finding collisions between a group
+  and a single object.
+
+* Fixed a bug where the time arguments in ``lerp`` were converted to ints.
+
+* Removed deprecated ``physics`` module.
+
+* Various other bugfixes.
+
+Version 0.7.5
+-------------
+
+* New (alpha) Array classes.
+
+* Fixed a segmentation fault due to weakrefs.  (``Sprite`` instances are no
+  longer weakrefable.)
+
+* Fixed sine interpolation being cosine interpolation :-P
+
+* Added an example showing different interpolators.
+
+* Added a ``flags`` keyword argument to ``init_display()``
+
+Version 0.7
+-----------
+
+* License changed to MIT.
+
+* Added add_time() function.
+
+* Time is stored internally as ``float`` instead of ``int``.  This allows for
+  optionally using seconds instead of milliseconds.
+
+* Added exponential, cosine, and sine interpolation.
+
+* Documented rabbyt.anims__ quite a bit better.
+
+__ http://matthewmarshall.org/projects/rabbyt/docs/rabbyt/anims/
+
+* Forced Pyrex version 0.9.5 or greater, to prevent segfaults when using
+  weakrefs.  (It still can be compiled without pyrex.)
+
+* Added more hacks for building on MacOS.  Hopefully it'll all go smooth now.
+
+* Deprecated the Basic1 and Basic2 physics classes.
+
+* HTML documentation is now included in the source distribution.
+
+* Added missing documentation for ``VertexArray.texture_id``.
+
+Version 0.6
+-----------
+
+* Sprites can be scaled independently on their x and y axes.
+
+* Added left, right, top, and bottom properties to Sprite.
+
+* Fixed bug with some sprites being drawn upside-down when rotated.
+
+* Fixed c, pyx, and pxd files being installed.
+
+* Added a small function for integrating with the chipmunk/pymunk physics lib.
+
+Version 0.0.5
+-------------
+
+* c source files are included, so Pyrex is not needed for building.
+
+* Renamed the ``DV``\* classes to ``Anim``\*.  (This is mostly internal and
+  shouldn't affect anyone.)
+
+* MANY fixes and improvements to font rendering.  (As in, it's actually
+  useful now!)
+
+* Lots of docstrings added and improved.
+
+* ``pygame_load_texture()`` now takes ``filter`` and ``mipmap`` arguments,
+  which are passed on to ``load_texture()``.
+
+Version 0.0.4
+-------------
+
+* Fixed compiling on MS Windows.
+
+* Added some simple helpers for physics simulation.
+
+* Moved all non-rendering code out of ``Sprite`` and into ``BaseSprite``.
+
+* Added font rendering support.
+
+* Using color data in ``VertexArray`` rendering is now optional.
+
+* ``VertexArray`` can now optionally bind a texture before rendering.
+
+* Fixed a bug with ``VertexArray`` barfing when not given all the data for
+  a vertex, instead of using defaults.
+
+* Fixed a segfault when trying to load a texture before initializing the
+  OpenGL context.
+
+* Switched ``DVProxy`` and ``DVPyFunc`` to not cache by default.  (Premature
+  optimization is the root of all evil.)
+
+* All examples now respond to window events nicely.
+
+
+Version 0.0.3
+-------------
+
+* Added ``DVProxy`` and ``DVPyFunc`` classes.  (Assigning a function to a sprite
+  property creates a ``DVPyFunc`` transparently.)
+
+* Added basic arithmetic operations for DV classes.
+
+* Added ``Sprite.attrgetter()`` for super fast property access.
+
+* Changed ``rabbyt.collisions.rdc()`` to not return groups with only one object.
+
+* Added a number of introductory examples, showing the basic features.
+
+Version 0.0.2
+-------------
+
+* Added vertex array rendering.
+
+* Added collision detection.
+
+* Lots of docstrings added/improved.
+
+* Added ``rgb`` property to ``Sprite``.
+
+Version 0.0.1
+-------------
+
+* Initial release!

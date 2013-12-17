@@ -1,0 +1,3 @@
+LIBRARY collisions.pyd
+EXPORTS
+PyInit_collisions

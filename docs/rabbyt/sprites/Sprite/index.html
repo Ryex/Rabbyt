@@ -1,0 +1,275 @@
+<html>
+<head>
+<title>Sprite - Rabbyt Reference</title>
+</head>
+<body>
+
+<a href="../../../rabbyt/">Documentation Index</a> | From module <a href="../../../rabbyt/sprites/">rabbyt.sprites</a>.
+<h1>Sprite</h1>
+
+
+Inherits from: <a href="../../../rabbyt/sprites/BaseSprite/">BaseSprite</a>
+
+
+<p><tt class="docutils literal"><span class="pre">Sprite(texture=None,</span> <span class="pre">shape=None,</span> <span class="pre">tex_shape=(0,1,1,0),</span> <span class="pre">...)</span></tt></p>
+<p>This class provides a basic, four point, textured sprite.</p>
+<p>All arguments are optional.</p>
+<p><tt class="docutils literal"><span class="pre">texture</span></tt> should be an image filename, a pyglet texture object, or
+an OpenGL texture id.  (See <tt class="docutils literal"><span class="pre">Sprite.texture</span></tt> for more information.)</p>
+<p>If <tt class="docutils literal"><span class="pre">shape</span></tt> is not given it will default to the dimensions of the
+texture if they are available.  For more information on <tt class="docutils literal"><span class="pre">shape</span></tt> and
+<tt class="docutils literal"><span class="pre">tex_shape</span></tt> read the docstrings for <tt class="docutils literal"><span class="pre">Sprite.shape</span></tt> and
+<tt class="docutils literal"><span class="pre">Sprite.tex_shape</span></tt></p>
+<p>Additionally, you can pass values for most of the properties as keyword
+arguments.  (<tt class="docutils literal"><span class="pre">x</span></tt>, <tt class="docutils literal"><span class="pre">y</span></tt>, <tt class="docutils literal"><span class="pre">xy</span></tt>, <tt class="docutils literal"><span class="pre">u</span></tt>, <tt class="docutils literal"><span class="pre">v</span></tt>, <tt class="docutils literal"><span class="pre">uv</span></tt>, etc...)</p>
+
+
+
+<div class="section">
+<h2>Methods</h2>
+
+<div class="section">
+    <h3>attrgetter</h3>
+    <p><tt class="docutils literal"><span class="pre">attrgetter(name)</span></tt></p>
+<p>Returns an anim that returns the value of the given attribute name.</p>
+<p>Perhaps this is easiest to see with an example.  The following two lines
+will both do the same thing, only the second is much, much faster:</p>
+<blockquote>
+<div class="highlight"><pre><span class="n">sprite</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="k">lambda</span><span class="p">:</span> <span class="n">other_sprite</span><span class="o">.</span><span class="n">x</span>
+
+<span class="n">sprite</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="n">other_sprite</span><span class="o">.</span><span class="n">attrgetter</span><span class="p">(</span><span class="s">&quot;x&quot;</span><span class="p">)</span>
+</pre></div>
+</blockquote>
+<p>The anim returned by attrgetter is implemented in C and will retrieve
+the value without doing a python attribute lookup.</p>
+<p>This works for any attribute that you can assign an anim to.</p>
+<p><tt class="docutils literal"><span class="pre">swizzle</span></tt> descriptors are properly handled.</p>
+
+</div>
+
+<div class="section">
+    <h3>convert_offset</h3>
+    <p><tt class="docutils literal"><span class="pre">convert_offset((x,</span> <span class="pre">y))</span> <span class="pre">-&gt;</span> <span class="pre">(x,</span> <span class="pre">y)</span></tt></p>
+<p>Converts coordinates relative to this sprite to global coordinates,
+including rotation and scaling.</p>
+
+</div>
+
+<div class="section">
+    <h3>render</h3>
+    
+</div>
+
+<div class="section">
+    <h3>render_after_transform</h3>
+    <p><tt class="docutils literal"><span class="pre">render_after_transform()</span></tt></p>
+<p>This method is called by <tt class="docutils literal"><span class="pre">BaseSprite.render()</span></tt> after transformations
+have been applied.</p>
+<p>If you don't want to mess with doing transformations yourself, you can
+override this method instead of <tt class="docutils literal"><span class="pre">render()</span></tt>.</p>
+
+</div>
+
+</div>
+
+
+
+<div class="section">
+<h2>Properties</h2>
+
+<div class="section">
+    <h3>alpha</h3>
+    <p>alpha color component</p>
+
+</div>
+
+<div class="section">
+    <h3>blue</h3>
+    <p>blue color component</p>
+
+</div>
+
+<div class="section">
+    <h3>bottom</h3>
+    <p>y coordinate of the bottom of the sprite</p>
+
+</div>
+
+<div class="section">
+    <h3>bounding_radius</h3>
+    <p>bounding_radius</p>
+<p>This should be the distance of the farthest point from the center.  It
+can be used for collision detection.</p>
+<p>By default this is calculated from the <tt class="docutils literal"><span class="pre">shape</span></tt> property, and is
+automatically updated whenever the shape is updated.  However, you can
+set it explicitly yourself.</p>
+<p>After the value is explicitly set it will no longer be updated by
+changes to the shape.  To revert back to the default behavior, delete
+the property using the <tt class="docutils literal"><span class="pre">del</span></tt> statement:</p>
+<pre class="literal-block">
+del sprite.bounding_radius
+</pre>
+
+</div>
+
+<div class="section">
+    <h3>bounding_radius_squared</h3>
+    <p>bounding_radius_squared</p>
+<p>This is just like <tt class="docutils literal"><span class="pre">bounding_radius</span></tt>, only it's squared.  (duh)</p>
+<p><tt class="docutils literal"><span class="pre">bounding_radius</span></tt> and <tt class="docutils literal"><span class="pre">bounding_radius_squared</span></tt> are automatically
+kept in sync with each other.</p>
+
+</div>
+
+<div class="section">
+    <h3>green</h3>
+    <p>green color component</p>
+
+</div>
+
+<div class="section">
+    <h3>left</h3>
+    <p>x coordinate of the left side of the sprite</p>
+
+</div>
+
+<div class="section">
+    <h3>red</h3>
+    <p>red color component</p>
+
+</div>
+
+<div class="section">
+    <h3>rgb</h3>
+    <p>swizzle for <tt class="docutils literal"><span class="pre">red</span></tt>, <tt class="docutils literal"><span class="pre">green</span></tt>, <tt class="docutils literal"><span class="pre">blue</span></tt></p>
+
+</div>
+
+<div class="section">
+    <h3>rgba</h3>
+    <p>swizzle for <tt class="docutils literal"><span class="pre">red</span></tt>, <tt class="docutils literal"><span class="pre">green</span></tt>, <tt class="docutils literal"><span class="pre">blue</span></tt>, <tt class="docutils literal"><span class="pre">alpha</span></tt></p>
+
+</div>
+
+<div class="section">
+    <h3>right</h3>
+    <p>x coordinate of the right side of the sprite</p>
+
+</div>
+
+<div class="section">
+    <h3>rot</h3>
+    <p>rotation angle in degrees.</p>
+
+</div>
+
+<div class="section">
+    <h3>scale</h3>
+    <p>scale</p>
+<p><tt class="docutils literal"><span class="pre">1.0</span></tt> is normal size; <tt class="docutils literal"><span class="pre">0.5</span></tt> is half size, <tt class="docutils literal"><span class="pre">2.0</span></tt> is double
+size... you get the point.</p>
+<p>You can scale the x and y axes independently by assigning a tuple with
+a length of two.</p>
+
+</div>
+
+<div class="section">
+    <h3>scale_x</h3>
+    <p>x component of <tt class="docutils literal"><span class="pre">scale</span></tt></p>
+
+</div>
+
+<div class="section">
+    <h3>scale_y</h3>
+    <p>y component of <tt class="docutils literal"><span class="pre">scale</span></tt></p>
+
+</div>
+
+<div class="section">
+    <h3>shape</h3>
+    <p>The shape of the sprite.</p>
+<p>This must either be of the form <tt class="docutils literal"><span class="pre">[left,</span> <span class="pre">top,</span> <span class="pre">right,</span> <span class="pre">bottom]</span></tt>, or a
+list of four coordinates, eg. <tt class="docutils literal"><span class="pre">[(0,0),</span> <span class="pre">(20,0),</span> <span class="pre">(20,20),</span> <span class="pre">(0,20)]</span></tt></p>
+<p><tt class="docutils literal"><span class="pre">[-10,</span> <span class="pre">-10,</span> <span class="pre">10,</span> <span class="pre">10]</span></tt> is the default.</p>
+<p>When you assign to <tt class="docutils literal"><span class="pre">shape</span></tt>, <tt class="docutils literal"><span class="pre">bounding_radius</span></tt> is automatically set
+to the distance of the farthest coordinate.</p>
+
+</div>
+
+<div class="section">
+    <h3>tex_shape</h3>
+    <p>This defines how a texture is mapped onto the sprite.</p>
+<p>Like <tt class="docutils literal"><span class="pre">Sprite.shape</span></tt>, you can give either
+<tt class="docutils literal"><span class="pre">[left,</span> <span class="pre">top,</span> <span class="pre">right,</span> <span class="pre">bottom]</span></tt> or a list of coordinates.</p>
+<p>The default is <tt class="docutils literal"><span class="pre">[0,</span> <span class="pre">1,</span> <span class="pre">1,</span> <span class="pre">0]</span></tt>, which uses the entire texture.</p>
+<p>For easy integration with pyglet, a tuple with four items will be
+interpreted as the format used by the <tt class="docutils literal"><span class="pre">tex_coords</span></tt> attribute
+of pyglet textures.</p>
+
+</div>
+
+<div class="section">
+    <h3>texture</h3>
+    <p><tt class="docutils literal"><span class="pre">Sprite.texture</span></tt></p>
+<p>The texture used for this sprite.</p>
+<p>The value can be in a variety of formats:</p>
+<blockquote>
+<p>If it's a string, it will be used as a filename to load the
+texture.</p>
+<p>If it's an integer, it will be used as an OpenGL texture id.</p>
+<p>If it's an object with an <tt class="docutils literal"><span class="pre">id</span></tt> attribute, it will be treated
+as a pyglet texture object.  (The <tt class="docutils literal"><span class="pre">width</span></tt>, <tt class="docutils literal"><span class="pre">height</span></tt>, and
+<tt class="docutils literal"><span class="pre">tex_coords</span></tt> attributes will set the sprite's <tt class="docutils literal"><span class="pre">shape</span></tt> and
+<tt class="docutils literal"><span class="pre">tex_shape</span></tt> properties.)</p>
+</blockquote>
+
+</div>
+
+<div class="section">
+    <h3>top</h3>
+    <p>y coordinate of the top of the sprite</p>
+
+</div>
+
+<div class="section">
+    <h3>u</h3>
+    <p>texture offset</p>
+
+</div>
+
+<div class="section">
+    <h3>uv</h3>
+    <p>swizzle for <tt class="docutils literal"><span class="pre">u</span></tt>, <tt class="docutils literal"><span class="pre">v</span></tt></p>
+
+</div>
+
+<div class="section">
+    <h3>v</h3>
+    <p>texture offset</p>
+
+</div>
+
+<div class="section">
+    <h3>x</h3>
+    <p>x coordinate of the sprite</p>
+
+</div>
+
+<div class="section">
+    <h3>xy</h3>
+    <p>swizzle for <tt class="docutils literal"><span class="pre">x</span></tt>, <tt class="docutils literal"><span class="pre">y</span></tt></p>
+
+</div>
+
+<div class="section">
+    <h3>y</h3>
+    <p>y coordinate of the sprite</p>
+
+</div>
+
+</div>
+
+
+
+</body>
+</html>

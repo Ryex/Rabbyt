@@ -1,0 +1,282 @@
+<html>
+<head>
+<title>rabbyt.anims - Rabbyt Reference</title>
+</head>
+<body>
+
+<a href="../../rabbyt/">Documentation Index</a>
+<h1>rabbyt.anims</h1>
+<p>This module provides <em>Animators</em> (or <em>anims</em> for short) for Rabbyt.</p>
+<p><em>Anims</em> are little objects that can implement a movement function, primarily
+meant to animate sprites.  The movement functions are all implemented in C, so
+your sprites can be animated without any python call overhead.</p>
+<p>For example, to linearly interpolate a sprite from x=0 to x=100 over the next
+second, you can do this:</p>
+<blockquote>
+<div class="highlight"><pre><span class="n">sprite</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="n">rabbyt</span><span class="o">.</span><span class="n">lerp</span><span class="p">(</span><span class="mf">0</span><span class="p">,</span> <span class="mf">100</span><span class="p">,</span> <span class="n">dt</span><span class="o">=</span><span class="mf">1</span><span class="p">)</span>
+</pre></div>
+</blockquote>
+<p>Looks like magic?</p>
+<p>It is!  Sorta...</p>
+<p>The <tt class="docutils literal"><span class="pre">Sprite</span></tt> class's <tt class="docutils literal"><span class="pre">x</span></tt> attribute is really a property.  If you
+assign an anim to it, that anim will be called for it's value every time the
+sprite needs it's x position.  Nearly all of <tt class="docutils literal"><span class="pre">Sprite</span></tt>'s properties work
+like this.</p>
+<p>Anims support various arithmatic opperations.  If you add two together,
+or add one with a constant number, a new anim will be returned.  Here is a
+rather contrived example of doing that:</p>
+<blockquote>
+<div class="highlight"><pre><span class="n">sprite</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="n">rabbyt</span><span class="o">.</span><span class="n">lerp</span><span class="p">(</span><span class="mf">0</span><span class="p">,</span> <span class="mf">100</span><span class="p">,</span> <span class="n">dt</span><span class="o">=</span><span class="mf">1</span><span class="p">)</span> <span class="o">+</span> <span class="mf">20</span>
+</pre></div>
+</blockquote>
+<p>(In this case, you would be better off interpolating from 20 to 120, but
+whatever.)</p>
+<p>Here is a more useful example:</p>
+<blockquote>
+<div class="highlight"><pre><span class="n">sprite2</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="n">sprite1</span><span class="o">.</span><span class="n">attrgetter</span><span class="p">(</span><span class="s">&#39;x&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="mf">20</span>
+</pre></div>
+</blockquote>
+<p>That will cause sprite2's x position to always be 20 more than sprite1's x
+position.  (<tt class="docutils literal"><span class="pre">Sprite.attrgetter()</span></tt> returns an anim that gets an attribute.)
+This all happens in compiled C code, without any python call overhead.  (That
+means you can have thousands of sprites doing this and it will still be fast.)</p>
+<p>But sometimes you don't really need that much speed.  You can use any python
+function as an anim as well.  This example does the same as the last one:</p>
+<blockquote>
+<div class="highlight"><pre><span class="n">sprite2</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="k">lambda</span><span class="p">:</span> <span class="n">sprite1</span><span class="o">.</span><span class="n">x</span> <span class="o">+</span> <span class="mf">20</span>
+</pre></div>
+</blockquote>
+<p>(<tt class="docutils literal"><span class="pre">Sprite.x</span></tt> will automatically wrap the function in an <tt class="docutils literal"><span class="pre">AnimPyFunc</span></tt>
+instance behind the scenes.)</p>
+<div class="section" id="using-anims-in-your-own-classes">
+<h1>Using anims in your own classes</h1>
+<p>You can use anims in your own class by subclassing from <tt class="docutils literal"><span class="pre">Animable</span></tt> and using
+the <tt class="docutils literal"><span class="pre">anim_slot</span></tt> descriptor.  For example, a simple sprite class could start
+like this:</p>
+<blockquote>
+<div class="highlight"><pre><span class="k">class</span> <span class="nc">MySprite</span><span class="p">(</span><span class="n">rabbyt</span><span class="o">.</span><span class="n">Animable</span><span class="p">):</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">rabbyt</span><span class="o">.</span><span class="n">anim_slot</span><span class="p">()</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">rabbyt</span><span class="o">.</span><span class="n">anim_slot</span><span class="p">()</span>
+    <span class="n">xy</span> <span class="o">=</span> <span class="n">rabbyt</span><span class="o">.</span><span class="n">swizzle</span><span class="p">(</span><span class="s">&#39;x&#39;</span><span class="p">,</span> <span class="s">&#39;y&#39;</span><span class="p">)</span>
+</pre></div>
+</blockquote>
+<p>The <tt class="docutils literal"><span class="pre">x</span></tt>, <tt class="docutils literal"><span class="pre">y</span></tt>, and <tt class="docutils literal"><span class="pre">xy</span></tt> attributes will behave the just like they do in
+rabbyt's <tt class="docutils literal"><span class="pre">Sprite</span></tt> class.</p>
+</div>
+
+
+
+
+
+<div class="section">
+<h2>Classes</h2>
+<ul>
+
+<li>
+    <a href="../../rabbyt/anims/Anim/">Anim</a>
+</li>
+
+<li>
+    <a href="../../rabbyt/anims/AnimConst/">AnimConst</a>
+</li>
+
+<li>
+    <a href="../../rabbyt/anims/AnimPyFunc/">AnimPyFunc</a>
+</li>
+
+<li>
+    <a href="../../rabbyt/anims/AnimProxy/">AnimProxy</a>
+</li>
+
+</ul>
+</div>
+
+
+
+<div class="section">
+<h2>Functions</h2>
+
+<div class="section">
+    <h3 >set_time</h3>
+    <p><tt class="docutils literal"><span class="pre">set_time(t)</span></tt></p>
+<p>Sets the time that <tt class="docutils literal"><span class="pre">get_time()</span></tt> should return.</p>
+<p>If you are using any time based animations, (such as <tt class="docutils literal"><span class="pre">lerp()</span></tt>,)
+you should call this function every frame.</p>
+<p>For example, if you are using pygame you can do this:</p>
+<pre class="literal-block">
+rabbyt.set_time(pygame.time.get_ticks())
+</pre>
+<p>Using this function should make it easier to implement a pause feature.</p>
+<p>Note that rabbyt makes no assumption about the unit that the time is in.
+You can use milliseconds or seconds or even something else.  It's up to
+you.</p>
+
+</div>
+
+<div class="section">
+    <h3 >get_time</h3>
+    <p><tt class="docutils literal"><span class="pre">get_time()</span></tt></p>
+<p>Gets the time that was last set by <tt class="docutils literal"><span class="pre">set_time()</span></tt></p>
+
+</div>
+
+<div class="section">
+    <h3 >add_time</h3>
+    <p><tt class="docutils literal"><span class="pre">add_time(t)</span></tt></p>
+<p>Adds <tt class="docutils literal"><span class="pre">t</span></tt> to the ... time ... (Is it just me or does that sound dorky?)</p>
+<p>This is really just a short cut that does this:</p>
+<blockquote>
+<div class="highlight"><pre><span class="n">set_time</span><span class="p">(</span><span class="n">get_time</span><span class="p">()</span> <span class="o">+</span> <span class="n">t</span><span class="p">)</span>
+</pre></div>
+</blockquote>
+<p>The new time is returned.</p>
+
+</div>
+
+<div class="section">
+    <h3 >lerp</h3>
+    <p><tt class="docutils literal"><span class="pre">lerp(start,</span> <span class="pre">end,</span> <span class="pre">[startt,]</span> <span class="pre">[endt,]</span> <span class="pre">[dt,]</span> <span class="pre">[t,]</span> <span class="pre">[extend])</span></tt></p>
+<p>Linearly interpolates between <tt class="docutils literal"><span class="pre">start</span></tt> and <tt class="docutils literal"><span class="pre">end</span></tt> as time moves from
+<tt class="docutils literal"><span class="pre">startt</span></tt> to <tt class="docutils literal"><span class="pre">endt</span></tt>.</p>
+<p><tt class="docutils literal"><span class="pre">startt</span></tt> is the time to start.</p>
+<p>To specify the ending time, use either <tt class="docutils literal"><span class="pre">endt</span></tt>, which is the absolute
+time, or <tt class="docutils literal"><span class="pre">dt</span></tt>, which is relative from <tt class="docutils literal"><span class="pre">startt</span></tt>.</p>
+<p>For example, the following are equivalent:</p>
+<blockquote>
+<div class="highlight"><pre><span class="n">lerp</span><span class="p">(</span><span class="mf">0</span><span class="p">,</span> <span class="mf">1</span><span class="p">,</span> <span class="n">rabbyt</span><span class="o">.</span><span class="n">get_time</span><span class="p">(),</span> <span class="n">endt</span><span class="o">=</span><span class="n">rabbyt</span><span class="o">.</span><span class="n">get_time</span><span class="p">()</span><span class="o">+</span><span class="mf">1</span><span class="p">)</span>
+<span class="n">lerp</span><span class="p">(</span><span class="mf">0</span><span class="p">,</span> <span class="mf">1</span><span class="p">,</span> <span class="n">rabbyt</span><span class="o">.</span><span class="n">get_time</span><span class="p">(),</span> <span class="n">dt</span><span class="o">=</span><span class="mf">1</span><span class="p">)</span>
+</pre></div>
+</blockquote>
+<p><tt class="docutils literal"><span class="pre">extend</span></tt> is a string defining what to do before <tt class="docutils literal"><span class="pre">startt</span></tt> and after
+<tt class="docutils literal"><span class="pre">endt</span></tt>. Possible values are:</p>
+<blockquote>
+<dl class="docutils">
+<dt><tt class="docutils literal"><span class="pre">&quot;constant&quot;</span></tt></dt>
+<dd>The value will be locked between <tt class="docutils literal"><span class="pre">start</span></tt> and <tt class="docutils literal"><span class="pre">end</span></tt>.  <em>This is
+the default.</em></dd>
+<dt><tt class="docutils literal"><span class="pre">&quot;extrapolate&quot;</span></tt></dt>
+<dd>After the value hits <tt class="docutils literal"><span class="pre">end</span></tt> it just keeps going!</dd>
+<dt><tt class="docutils literal"><span class="pre">&quot;repeat&quot;</span></tt></dt>
+<dd>After the value hits <tt class="docutils literal"><span class="pre">end</span></tt> it will start over again at
+<tt class="docutils literal"><span class="pre">start</span></tt>.</dd>
+<dt><tt class="docutils literal"><span class="pre">&quot;reverse&quot;</span></tt></dt>
+<dd>After the value hits <tt class="docutils literal"><span class="pre">end</span></tt> it will reverse, moving back to
+<tt class="docutils literal"><span class="pre">start</span></tt>.</dd>
+</dl>
+</blockquote>
+<p>Check out the <tt class="docutils literal"><span class="pre">extend_modes.py</span></tt> example to see all four side by side.</p>
+<p>If any required values are omitted, <tt class="docutils literal"><span class="pre">lerp</span></tt> will return an
+<tt class="docutils literal"><span class="pre">IncompleteInterpolateAnim</span></tt> instance, which will have the missing values
+filled in when assigned to an anim slot.  So instead of doing this:</p>
+<blockquote>
+<div class="highlight"><pre><span class="c"># long way:</span>
+<span class="n">sprite</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="n">lerp</span><span class="p">(</span><span class="n">start</span><span class="o">=</span><span class="n">sprite</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="mf">10</span><span class="p">,</span> <span class="n">startt</span><span class="o">=</span><span class="n">get_time</span><span class="p">(),</span> <span class="n">dt</span><span class="o">=</span><span class="mf">1</span><span class="p">)</span>
+</pre></div>
+</blockquote>
+<p>... you could do this:</p>
+<blockquote>
+<div class="highlight"><pre><span class="c"># shortcut with same result:</span>
+<span class="n">sprite</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="n">lerp</span><span class="p">(</span><span class="n">end</span><span class="o">=</span><span class="mf">10</span><span class="p">,</span> <span class="n">dt</span><span class="o">=</span><span class="mf">1</span><span class="p">)</span>
+</pre></div>
+</blockquote>
+<p>Both <tt class="docutils literal"><span class="pre">start</span></tt> and <tt class="docutils literal"><span class="pre">startt</span></tt> are missing, so <tt class="docutils literal"><span class="pre">lerp</span></tt> returns an incomplete
+anim.  When it is assigned to <tt class="docutils literal"><span class="pre">sprite.x</span></tt>, <tt class="docutils literal"><span class="pre">start</span></tt> is filled in with
+the previous value of <tt class="docutils literal"><span class="pre">sprite.x</span></tt> and <tt class="docutils literal"><span class="pre">startt</span></tt> is filled in with the
+current time.</p>
+<p><tt class="docutils literal"><span class="pre">start</span></tt> and <tt class="docutils literal"><span class="pre">end</span></tt> can either be numbers, or tuples of numbers.  If
+they are tuples, a tuple of anims will be returned.  For example, this
+line:</p>
+<blockquote>
+<div class="highlight"><pre><span class="n">sprite</span><span class="o">.</span><span class="n">rgba</span> <span class="o">=</span> <span class="n">lerp</span><span class="p">((</span><span class="mf">0</span><span class="p">,</span><span class="mf">1</span><span class="p">,</span><span class="mf">0</span><span class="p">,</span><span class="o">.</span><span class="mf">5</span><span class="p">),</span> <span class="p">(</span><span class="mf">1</span><span class="p">,</span><span class="mf">0</span><span class="p">,</span><span class="mf">1</span><span class="p">,</span><span class="mf">1</span><span class="p">),</span> <span class="n">dt</span><span class="o">=</span><span class="mf">1</span><span class="p">)</span>
+</pre></div>
+</blockquote>
+<p>is equivalent to this:</p>
+<blockquote>
+<div class="highlight"><pre><span class="n">sprite</span><span class="o">.</span><span class="n">red</span>   <span class="o">=</span> <span class="n">lerp</span><span class="p">(</span><span class="mf">0</span><span class="p">,</span> <span class="mf">1</span><span class="p">,</span> <span class="n">dt</span><span class="o">=</span><span class="mf">1</span><span class="p">)</span>
+<span class="n">sprite</span><span class="o">.</span><span class="n">green</span> <span class="o">=</span> <span class="n">lerp</span><span class="p">(</span><span class="mf">1</span><span class="p">,</span> <span class="mf">0</span><span class="p">,</span> <span class="n">dt</span><span class="o">=</span><span class="mf">1</span><span class="p">)</span>
+<span class="n">sprite</span><span class="o">.</span><span class="n">blue</span>  <span class="o">=</span> <span class="n">lerp</span><span class="p">(</span><span class="mf">0</span><span class="p">,</span> <span class="mf">1</span><span class="p">,</span> <span class="n">dt</span><span class="o">=</span><span class="mf">1</span><span class="p">)</span>
+<span class="n">sprite</span><span class="o">.</span><span class="n">alpha</span> <span class="o">=</span> <span class="n">lerp</span><span class="p">(</span><span class="o">.</span><span class="mf">5</span><span class="p">,</span><span class="mf">1</span><span class="p">,</span> <span class="n">dt</span><span class="o">=</span><span class="mf">1</span><span class="p">)</span>
+</pre></div>
+</blockquote>
+<p>TODO document t [startt and endt (mostly) ignored when used]</p>
+
+</div>
+
+<div class="section">
+    <h3 >ease</h3>
+    <p><tt class="docutils literal"><span class="pre">ease(start,</span> <span class="pre">end,</span> <span class="pre">[startt,]</span> <span class="pre">[endt,]</span> <span class="pre">[dt,]</span> <span class="pre">[t,]</span> <span class="pre">[extend,]</span> <span class="pre">[method,])</span></tt></p>
+<p>Interpolates between <tt class="docutils literal"><span class="pre">start</span></tt> and <tt class="docutils literal"><span class="pre">end</span></tt>, easing in and out of the
+transition.</p>
+<p><tt class="docutils literal"><span class="pre">method</span></tt> is the easing method to use.  It defaults to &quot;sine&quot;.  See the
+&quot;interpolation.py&quot; example in the rabbyt source distribution for more.</p>
+<p>TODO List the valid interpolation methods here (perhaps with descriptions.)</p>
+<p>All other argments are identical to <tt class="docutils literal"><span class="pre">lerp</span></tt>.</p>
+
+</div>
+
+<div class="section">
+    <h3 >ease_in</h3>
+    <p><tt class="docutils literal"><span class="pre">ease_in(start,</span> <span class="pre">end,</span> <span class="pre">[startt,]</span> <span class="pre">[endt,]</span> <span class="pre">[dt,]</span> <span class="pre">[t,]</span> <span class="pre">[extend,]</span> <span class="pre">[method,])</span></tt></p>
+<p>Interpolates between <tt class="docutils literal"><span class="pre">start</span></tt> and <tt class="docutils literal"><span class="pre">end</span></tt>, easing into the
+transition.  (So the movement starts out slow.)</p>
+<p>See the docs for <tt class="docutils literal"><span class="pre">ease</span></tt> for more information.</p>
+
+</div>
+
+<div class="section">
+    <h3 >ease_out</h3>
+    <p><tt class="docutils literal"><span class="pre">ease_out(start,</span> <span class="pre">end,</span> <span class="pre">[startt,]</span> <span class="pre">[endt,]</span> <span class="pre">[dt,]</span> <span class="pre">[t,]</span> <span class="pre">[extend,]</span> <span class="pre">[method,])</span></tt></p>
+<p>Interpolates between <tt class="docutils literal"><span class="pre">start</span></tt> and <tt class="docutils literal"><span class="pre">end</span></tt>, easing out of the
+transition.  (The movement starts fast and ends slow.)</p>
+<p>See the docs for <tt class="docutils literal"><span class="pre">ease</span></tt> for more information.</p>
+
+</div>
+
+<div class="section">
+    <h3 >chain</h3>
+    <p><tt class="docutils literal"><span class="pre">chain(...)</span></tt></p>
+<p><tt class="docutils literal"><span class="pre">chain</span></tt> provides a way to automatically run anims in a sequence.  For
+example, you can move a sprite in a square like this:</p>
+<pre class="literal-block">
+now = get_time()
+sprite.xy = chain(
+        lerp(( 0, 0), (10, 0),    now, now+10),
+        lerp((10, 0), (10,10), now+10, now+20),
+        lerp((10,10), ( 0,10), now+20, now+30),
+        lerp(( 0,10), ( 0, 0), now+30, now+40))
+</pre>
+<p>If you ommit the <tt class="docutils literal"><span class="pre">start</span></tt> and <tt class="docutils literal"><span class="pre">startt</span></tt> arguments of lerp, they will
+be filled in from <tt class="docutils literal"><span class="pre">end</span></tt> and <tt class="docutils literal"><span class="pre">endt</span></tt> of the the previous lerp.  So
+this is a less verbose way to do the same thing as above:</p>
+<pre class="literal-block">
+sprite.xy = chain(
+        lerp((0,0), (10, 0), dt=10),
+        lerp(end=(10,10), dt=10),
+        lerp(end=( 0,10), dt=10),
+        lerp(end=( 0, 0), dt=10))
+</pre>
+<p>Currently, <tt class="docutils literal"><span class="pre">lerp</span></tt>, <tt class="docutils literal"><span class="pre">ease</span></tt>, <tt class="docutils literal"><span class="pre">ease_in</span></tt>, and <tt class="docutils literal"><span class="pre">ease_out</span></tt> are the only
+anims that can be used with <tt class="docutils literal"><span class="pre">chain</span></tt>.</p>
+
+</div>
+
+<div class="section">
+    <h3 >wrap</h3>
+    <p><tt class="docutils literal"><span class="pre">wrap(bounds,</span> <span class="pre">parent,</span> <span class="pre">static=True)</span> <span class="pre">-&gt;</span> <span class="pre">AnimWrap</span> <span class="pre">or</span> <span class="pre">tuple</span> <span class="pre">of</span> <span class="pre">AnimWraps</span></tt></p>
+<p>Wraps a parent <tt class="docutils literal"><span class="pre">Anim</span></tt> to fit within <tt class="docutils literal"><span class="pre">bounds</span></tt>.  <tt class="docutils literal"><span class="pre">bounds</span></tt> should be an
+object that supports item access for at least <tt class="docutils literal"><span class="pre">bounds[0]</span></tt> and
+<tt class="docutils literal"><span class="pre">bounds[1]</span></tt>.  (A list or tuple with a length of 2 would work great.)</p>
+<p>If <tt class="docutils literal"><span class="pre">static</span></tt> is <tt class="docutils literal"><span class="pre">True</span></tt>, <tt class="docutils literal"><span class="pre">bounds</span></tt> is only read once and stored in C
+variables for fast access. This is much faster, but doesn't work if
+<tt class="docutils literal"><span class="pre">bounds</span></tt> is an object you wish to mutate.</p>
+<p>If <tt class="docutils literal"><span class="pre">parent</span></tt> is a iterable, a tuple of anims will be returned instead
+of a single one.  (This is similar to <tt class="docutils literal"><span class="pre">lerp()</span></tt>.)</p>
+
+</div>
+
+</div>
+
+
+
+</body>
+</html>

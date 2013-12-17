@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+
+{% block title %}{{module.name}} - Rabbyt Reference{% endblock %}
+
+{% block content %}
+<a href="{{relative_base}}{{base_url}}rabbyt/">Documentation Index</a>
+<h1>{{module.name}}</h1>
+{{module.doc|restructuredtext}}
+
+{% if module.modules %}
+<div class="section">
+<h2>Modules</h2>
+<ul>
+{% for m in module.modules %}
+<li>
+    <a href="{{relative_base}}{{m.get_absolute_url}}">{{m.name}}</a>
+</li>
+{% endfor %}
+</ul>
+</div>
+{% endif %}
+
+{% if module.classes %}
+<div class="section">
+<h2>Classes</h2>
+<ul>
+{% for c in module.classes %}
+<li>
+    <a href="{{relative_base}}{{c.get_absolute_url}}">{{c.name}}</a>
+</li>
+{% endfor %}
+</ul>
+</div>
+{% endif %}
+
+{% if module.functions %}
+<div class="section">
+<h2>Functions</h2>
+{% for f in module.functions %}
+<div class="section">
+    <h3 >{{f.name}}</h3>
+    {{f.doc|restructuredtext}}
+</div>
+{% endfor %}
+</div>
+{% endif %}
+
+{% endblock %}
+
+{% block sidebar %}
+
+{% if module.modules %}
+<h2>Modules</h2>
+<ul>
+{% for m in module.modules %}
+<li>
+    <a href="{{relative_base}}{{m.get_absolute_url}}">{{m.name}}</a>
+</li>
+{% endfor %}
+</ul>
+</div>
+{% endif %}
+
+{% if module.classes %}
+<h2>Classes</h2>
+<ul>
+{% for c in module.classes %}
+<li>
+    <a href="{{relative_base}}{{c.get_absolute_url}}">{{c.name}}</a>
+</li>
+{% endfor %}
+</ul>
+{% endif %}
+
+{% if module.functions %}
+<h2>Functions</h2>
+<ul>
+{% for f in module.functions %}
+<li><a href="#{{f.name}}">{{f.name}}</a></li>
+{% endfor %}
+{% endif %}
+
+{% endblock %}

@@ -1,0 +1,15 @@
+Rabbyt is a sprite library for Python with game development in mind.  It
+provides fast performance with an easy to use but flexable API.
+
+For a quick rundown on the current features see the website__.
+
+__ http://matthewmarshall.org/projects/rabbyt/
+
+You can find the `reference documentation here`__.
+
+__ http://matthewmarshall.org/projects/rabbyt/docs/
+
+Examples and documentation are included in the source distribution, but not
+the .eggs or windows installer.
+
+CONVERTED TO USE CYTHON INSTED OF PYREX BY RYEX (ryexander@gmail.com)

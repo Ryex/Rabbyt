@@ -1,0 +1,189 @@
+<html>
+<head>
+<title>rabbyt - Rabbyt Reference</title>
+</head>
+<body>
+
+<a href="../rabbyt/">Documentation Index</a>
+<h1>rabbyt</h1>
+<p>Rabbyt is a fast 2d sprite library for Python.</p>
+
+
+
+<div class="section">
+<h2>Modules</h2>
+<ul>
+
+<li>
+    <a href="../rabbyt/sprites/">rabbyt.sprites</a>
+</li>
+
+<li>
+    <a href="../rabbyt/anims/">rabbyt.anims</a>
+</li>
+
+<li>
+    <a href="../rabbyt/primitives/">rabbyt.primitives</a>
+</li>
+
+<li>
+    <a href="../rabbyt/collisions/">rabbyt.collisions</a>
+</li>
+
+</ul>
+</div>
+
+
+
+<div class="section">
+<h2>Classes</h2>
+<ul>
+
+<li>
+    <a href="../rabbyt/Scheduler/">Scheduler</a>
+</li>
+
+</ul>
+</div>
+
+
+
+<div class="section">
+<h2>Functions</h2>
+
+<div class="section">
+    <h3 >set_viewport</h3>
+    <p><tt class="docutils literal"><span class="pre">set_viewport(viewport,</span> <span class="pre">[projection])</span></tt></p>
+<p>Sets how coordinates map to the screen.</p>
+<p><tt class="docutils literal"><span class="pre">viewport</span></tt> gives the screen coordinates that will be drawn to.  It
+should be in either the form <tt class="docutils literal"><span class="pre">(width,</span> <span class="pre">height)</span></tt> or
+<tt class="docutils literal"><span class="pre">(left,</span> <span class="pre">top,</span> <span class="pre">right,</span> <span class="pre">bottom)</span></tt></p>
+<p><tt class="docutils literal"><span class="pre">projection</span></tt> gives the sprite coordinates that will be mapped to the
+screen coordinates given by <tt class="docutils literal"><span class="pre">viewport</span></tt>.  It too should be in one of the
+two forms accepted by <tt class="docutils literal"><span class="pre">viewport</span></tt>.  If <tt class="docutils literal"><span class="pre">projection</span></tt> is not given, it
+will default to the width and height of <tt class="docutils literal"><span class="pre">viewport</span></tt>.  If only the width
+and height are given, <tt class="docutils literal"><span class="pre">(0,</span> <span class="pre">0)</span></tt> will be the center point.</p>
+
+</div>
+
+<div class="section">
+    <h3 >set_default_attribs</h3>
+    <p><tt class="docutils literal"><span class="pre">set_default_attribs()</span></tt></p>
+<p>Sets a few of the OpenGL attributes that sprites expect.</p>
+<p>Unless you know what you are doing, you should call this at least once
+before rendering any sprites.  (It is called automatically in
+<tt class="docutils literal"><span class="pre">rabbyt.init_display()</span></tt>)</p>
+
+</div>
+
+<div class="section">
+    <h3 >clear</h3>
+    <p><tt class="docutils literal"><span class="pre">clear(rgba=(0.0,0.0,0.0,1.0))</span></tt></p>
+<p>Clear the screen to a background color.</p>
+
+</div>
+
+<div class="section">
+    <h3 >get_gl_vendor</h3>
+    <p><tt class="docutils literal"><span class="pre">gl_get_vendor()</span></tt></p>
+<p>Returns the OpenGL vendor string.  Returns None if there is no context.</p>
+
+</div>
+
+<div class="section">
+    <h3 >render_unsorted</h3>
+    <p><tt class="docutils literal"><span class="pre">render_unsorted(sprites)</span></tt></p>
+<p>Renders a list of sprites.</p>
+<p>Since this function is implemented in Pyrex, it should be a little faster
+than looping through the sprites in Python.</p>
+
+</div>
+
+<div class="section">
+    <h3 >load_texture</h3>
+    <p><tt class="docutils literal"><span class="pre">load_texture(byte_string,</span> <span class="pre">size,</span> <span class="pre">type_='RGBA',</span> <span class="pre">filter=True,</span> <span class="pre">mipmap=True)</span></tt></p>
+<p>Load a texture and return it.</p>
+
+</div>
+
+<div class="section">
+    <h3 >update_texture</h3>
+    <p><tt class="docutils literal"><span class="pre">update_texture(texture_id,</span> <span class="pre">byte_string,</span> <span class="pre">size,</span> <span class="pre">type_='RGBA',</span> <span class="pre">filter=True,</span>
+<span class="pre">mipmap=True)</span></tt></p>
+<p>Update a texture with a different byte_string.</p>
+
+</div>
+
+<div class="section">
+    <h3 >unload_texture</h3>
+    <p><tt class="docutils literal"><span class="pre">unload_texture(texture_id)</span></tt></p>
+<p>Unload a texture from memory.</p>
+
+</div>
+
+<div class="section">
+    <h3 >autodetect_load_texture</h3>
+    <p><tt class="docutils literal"><span class="pre">autodetect_load_texture(filename)</span></tt></p>
+<p>Automatically chooses between pyglet and pygame for loading a texture.</p>
+<p>If pyglet is importable and pyglet.gl.get_current_context() does not
+return None, pyglet will be used.  Otherwise, pygame is used.</p>
+<p>After this function is called the first time, it automatically calls
+<tt class="docutils literal"><span class="pre">set_load_texture_file_hook</span></tt> with the correct function, so there is
+no additional overhead.</p>
+<p>This is the default function for loading textures.</p>
+
+</div>
+
+<div class="section">
+    <h3 >pyglet_load_texture</h3>
+    <p><tt class="docutils literal"><span class="pre">pyglet_load_texture(filename)</span></tt></p>
+<p>Uses pyglet to load a texture from a file.  The texture is cached.</p>
+<p>(This is meant to be used with <tt class="docutils literal"><span class="pre">set_load_texture_file_hook</span></tt>.)</p>
+
+</div>
+
+<div class="section">
+    <h3 >pygame_load_texture</h3>
+    <p><tt class="docutils literal"><span class="pre">pygame_load_texture(filename,</span> <span class="pre">filter=True,</span> <span class="pre">mipmap=True)</span> <span class="pre">-&gt;</span> <span class="pre">texture_id,</span>
+<span class="pre">size</span></tt></p>
+<p>Reads an image from a file and loads it as a texture.  Pygame is used for
+reading the image.</p>
+<p>If <tt class="docutils literal"><span class="pre">filename</span></tt> is a relative path, the working directory is searched
+first, then <tt class="docutils literal"><span class="pre">rabbyt.data_directory</span></tt> is searched for the file.</p>
+
+</div>
+
+<div class="section">
+    <h3 >set_load_texture_file_hook</h3>
+    <p><tt class="docutils literal"><span class="pre">set_load_texture_file_hook(callback)</span></tt></p>
+<p>This sets the <tt class="docutils literal"><span class="pre">callback</span></tt> that is used to load a texture from a file.
+(It is called when you give a string for the first argument of
+<tt class="docutils literal"><span class="pre">Sprite</span></tt>.)</p>
+<p>The default is <tt class="docutils literal"><span class="pre">rabbyt.autodetect_load_texture</span></tt>, which will smartly
+choose between using pyglet of pygame to load the file.</p>
+<p>The <tt class="docutils literal"><span class="pre">callback</span></tt> should take the filename as a single argument, and return
+either a tuple of the form <tt class="docutils literal"><span class="pre">(texture_id,</span> <span class="pre">(width,</span> <span class="pre">height))</span></tt> or any value
+suitable for assiging to <tt class="docutils literal"><span class="pre">Sprite.texture</span></tt>.</p>
+
+</div>
+
+<div class="section">
+    <h3 >init_display</h3>
+    <p>In an ongoing attempt at cleaning up rabbyt, init_display has been
+deprecated and will be removed in a future version.  You can achive the
+same result by doing this:</p>
+<pre class="literal-block">
+pygame.init()
+pygame.display.set_mode(size, pygame.OPENGL | pygame.DOUBLEBUF)
+rabbyt.set_viewport(size)
+rabbyt.set_default_attribs()
+</pre>
+
+</div>
+
+</div>
+
+
+
+</body>
+</html>

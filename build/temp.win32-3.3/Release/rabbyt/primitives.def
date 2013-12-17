@@ -1,0 +1,3 @@
+LIBRARY primitives.pyd
+EXPORTS
+PyInit_primitives

@@ -1,0 +1,30 @@
+<html>
+<head>
+<title>AnimPyFunc - Rabbyt Reference</title>
+</head>
+<body>
+
+<a href="../../../rabbyt/">Documentation Index</a> | From module <a href="../../../rabbyt/anims/">rabbyt.anims</a>.
+<h1>AnimPyFunc</h1>
+
+
+Inherits from: <a href="../../../rabbyt/anims/Anim/">Anim</a>
+
+
+<p><tt class="docutils literal"><span class="pre">AnimPyFunc(function,</span> <span class="pre">cache=False)</span></tt></p>
+<p>An anim that calls a python function, using the returned value.</p>
+<p>function is the callback called to retrieve the value.  It should
+return a float.</p>
+<p>If <tt class="docutils literal"><span class="pre">cache</span></tt> is <tt class="docutils literal"><span class="pre">True</span></tt>, the result returned by function will be
+cached for as long as the time (as set by <tt class="docutils literal"><span class="pre">rabbyt.set_time()</span></tt>) doesn't
+change. This could provide good speedup if the value is read multiple
+times per frame.</p>
+
+
+
+
+
+
+
+</body>
+</html>

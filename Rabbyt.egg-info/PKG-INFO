@@ -1,0 +1,51 @@
+Metadata-Version: 1.1
+Name: Rabbyt
+Version: 0.8.3
+Summary: A fast 2D sprite engine using OpenGL
+Home-page: http://matthewmarshall.org/projects/rabbyt/
+Author: Matthew Marshall
+Author-email: matthew@matthewmarshall.org
+License: MIT
+Description: Rabbyt is a sprite library for Python with game development in mind.  It
+        provides fast performance with an easy to use but flexable API.
+        
+        For a quick rundown on the current features see the website__.
+        
+        __ http://matthewmarshall.org/projects/rabbyt/
+        
+        You can find the `reference documentation here`__.
+        
+        __ http://matthewmarshall.org/projects/rabbyt/docs/
+        
+        Examples and documentation are included in the source distribution, but not
+        the .eggs or windows installer.
+        
+        
+        
+        Changes from Version 0.8.2 to Version 0.8.3
+        ===============================================================
+        
+        
+        * Fixed Sprite.left (etc.) incorrectly applying independant axis scaling to
+          absolute coords instead of rotated relative to the sprite.
+        
+        * Sprite.bounding_radius now reflects Sprite.scale.  (previously ignored.)
+        
+        * Fixed a segfault when anims have circular dependencies.
+        
+        * Optimized ``swizzle``.
+        
+        * Fixed ``aabb_collide()`` not always reporting immediately overlapping rects.
+        
+        * Fixed a memory leak caused by an extra underscore at the end of ``__dealloc___``
+        
+        
+        
+        
+Platform: UNKNOWN
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python
+Classifier: Topic :: Multimedia :: Graphics
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
