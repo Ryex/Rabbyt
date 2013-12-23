@@ -1,3 +1,0 @@
-LIBRARY _sprites.pyd
-EXPORTS
-PyInit__sprites
