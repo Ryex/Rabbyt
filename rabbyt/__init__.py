@@ -74,7 +74,7 @@ class Scheduler(object):
         try:
             while self.heap[0][0] <= time:
                 heapq.heappop(self.heap)[1]()
-        except IndexError, e:
+        except IndexError as e:
             # If the IndexError was raised due to something other than an
             # empty heap we don't want to silence it.
             if len(self.heap) != 0:

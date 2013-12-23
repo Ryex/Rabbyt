@@ -92,12 +92,13 @@ setup(
         Extension("rabbyt.primitives", ["rabbyt/rabbyt.primitives.pyx"],
             libraries=['GL', 'm']),
     ],
+    use_2to3=False,
 
     classifiers = [
         'Development Status :: 4 - Beta',
         'Intended Audience :: Developers',
         'License :: OSI Approved :: MIT License',
-        'Programming Language :: Python',
+        'Programming Language :: Python :: 3',
         'Topic :: Multimedia :: Graphics',
         'Topic :: Software Development :: Libraries :: Python Modules',
     ],
