@@ -37,9 +37,13 @@ float _out_bounce(float t){
 
 
 float interpolate_func(AnimSlot_s * slot){
+    float t;
+    float start, end;
+    float x;
+    float s;
     InterpolateAnim_data * d;
     d = (InterpolateAnim_data *)(slot->anim->data);
-    float t;
+    
 
     if (d->use_global_time){
         t = (system_time - d->start_time)*d->one_over_dt;
@@ -47,7 +51,7 @@ float interpolate_func(AnimSlot_s * slot){
         READ_SLOT(&(d->t), &t);
     }
 
-    float start, end;
+    
     READ_SLOT(&(d->start), &start);
     READ_SLOT(&(d->end), &end);
 
@@ -87,8 +91,7 @@ float interpolate_func(AnimSlot_s * slot){
             break;
     }
 
-    float x;
-    float s;
+    
 
     switch (d->inter_mode) {
         case (INTER_LERP):
