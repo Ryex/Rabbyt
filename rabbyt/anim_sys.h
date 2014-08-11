@@ -62,7 +62,7 @@ enum {
             (out)[0] = (slot)->local;\
             break;\
         default:\
-            (out)[0] = ((float*)((slot)->base[0] + (slot)->offset))[0];\
+            (out)[0] = ((float*)((int)(slot)->base[0] + (int)(slot)->offset))[0];\
             break;\
     }}while(0)
 

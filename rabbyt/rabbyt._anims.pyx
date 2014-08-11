@@ -262,7 +262,7 @@ cdef class cAnimable:
         if hasattr(self, "_anim_slot_descriptors"):
             self.c_slot_count = len(self._anim_slot_descriptors)
         self.c_anim_slots = <AnimSlot_s**>malloc(
-                sizeof(void*)*self.c_slot_count)
+                sizeof(char*)*self.c_slot_count)
 
         for i in range(self.c_slot_count):
             slot = AnimSlot()
