@@ -23,7 +23,7 @@ THE SOFTWARE.
 
 __author__ = "Matthew Marshall <matthew@matthewmarshall.org>"
 
-
+from libc.stdio cimport printf
 
 cdef extern from "include_math.h":
     cdef float fmodf(float x, float y)
@@ -93,13 +93,91 @@ cdef extern from "include_gl.h":
     cdef void glDeleteTextures(GLsizei n, GLuint *textures)
     cdef void glTexEnvf(GLenum target, GLenum pname, GLfloat param)
 
-    cdef GLubyte *glGetString(GLenum name)
+    cdef const GLubyte *glGetString(GLenum name)
 
     cdef GLint gluBuild2DMipmaps( GLenum target, GLint internalFormat, GLsizei width, GLsizei height, GLenum format, GLenum type, void *data)
+
+    cdef int GL_NUM_EXTENSIONS
+
+    cdef const GLubyte* glGetStringi(GLenum name, GLint index)
+
+    cdef void glGetIntegerv(GLenum name, GLint* param)
+
+    cdef int GL_TEXTURE_RECTANGLE_ARB
+    cdef int GL_TEXTURE_RECTANGLE_NV
+
 
 from warnings import warn
 
 load_texture_file_hook = None
+
+def get_gl_version():
+  """
+  ``gl_get_version()``
+
+  Returns the OpenGL version string.  Returns None if there is no context.
+  """
+  cdef char * string
+  string = <char*>glGetString(GL_VERSION)
+  if string == NULL:
+      return None
+  else:
+      return string
+
+def have_version(major, minor=0, release=0):
+    '''Determine if a version of OpenGL is supported.
+
+    :Parameters:
+       `major` : int
+           The major revision number (typically 1 or 2).
+       `minor` : int
+           The minor revision number.
+       `release` : int
+           The release number.
+
+    :rtype: bool
+    :return: True if the requested or a later version is supported. if there is no context returns false
+    '''
+    gl_version = get_gl_version()
+    if gl_version is None:
+        return False
+    ver = '{}.0.0'.format(int(float(gl_version.split(b' ', 1)[0])))
+    imajor, iminor, irelease = [int(float(v)) for v in ver.split('.', 3)[:3]]
+    return imajor > major or \
+      (imajor == major and iminor > minor) or \
+      (imajor == major and iminor == minor and irelease >= release)
+
+#gl_extension methods
+def _gl_get_ext_i(i):
+    cdef char * string
+    string = <char*>glGetStringi(GL_EXTENSIONS, i)
+    if string == NULL:
+        return None
+    else:
+        return string
+
+def _gl_get_ext():
+    cdef char * string
+    string = <char*>glGetString(GL_EXTENSIONS)
+    if string == NULL:
+        return None
+    else:
+        return string
+
+def get_extensions():
+    cdef GLint num_extensions
+    gl_extensions = ()
+    if get_gl_version():
+      if have_version(3):
+          glGetIntegerv(GL_NUM_EXTENSIONS, &num_extensions)
+          gl_extensions = (_gl_get_ext_i(i) for i in range(num_extensions))
+      else:
+          gl_extensions = _gl_get_ext().split()
+      if gl_extensions:
+          gl_extensions = set(gl_extensions)
+    return gl_extensions
+
+
 def set_load_texture_file_hook(callback):
     """
     ``set_load_texture_file_hook(callback)``
@@ -265,14 +343,23 @@ def update_texture(texture_id, byte_string, size, type_='RGBA', filter=True,
 
     filter_type = GL_NEAREST
     if filter: filter_type = GL_LINEAR
-    glBindTexture(GL_TEXTURE_2D, texture_id)
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, filter_type)
-    if mipmap:
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_NEAREST)
-        gluBuild2DMipmaps(GL_TEXTURE_2D, channels, size[0], size[1], ptype, GL_UNSIGNED_BYTE, data)
+
+    exts = get_extensions()
+    if 'GL_ARB_texture_rectangle' in exts:
+        target = GL_TEXTURE_RECTANGLE_ARB
+    elif 'GL_NV_texture_rectangle' in exts:
+        target = GL_TEXTURE_RECTANGLE_NV
     else:
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, filter_type)
-        glTexImage2D(GL_TEXTURE_2D, 0, ptype, size[0], size[1], 0, ptype, GL_UNSIGNED_BYTE, data)
+        target = GL_TEXTURE_2D
+
+    glBindTexture(target, texture_id)
+    glTexParameteri(target, GL_TEXTURE_MAG_FILTER, filter_type)
+    if mipmap:
+        glTexParameteri(target, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_NEAREST)
+        gluBuild2DMipmaps(target, channels, size[0], size[1], ptype, GL_UNSIGNED_BYTE, data)
+    else:
+        glTexParameteri(target, GL_TEXTURE_MIN_FILTER, filter_type)
+        glTexImage2D(target, 0, ptype, size[0], size[1], 0, ptype, GL_UNSIGNED_BYTE, data)
 
 def unload_texture(texture_id):
     """

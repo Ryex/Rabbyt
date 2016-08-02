@@ -1,3 +1,4 @@
+#define GL_GLEXT_PROTOTYPES = 1
 #ifdef _MSC_VER
 #include <windows.h>
 #endif

@@ -29,6 +29,8 @@ THE SOFTWARE.
 
 __author__ = "Matthew Marshall <matthew@matthewmarshall.org>"
 
+from libc.stdio cimport printf
+
 cdef extern from "include_math.h":
     cdef float fmodf(float x, float y)
     cdef float cosf(float x)
@@ -53,6 +55,7 @@ cdef extern from "include_gl.h":
     ctypedef double GLdouble
     ctypedef double GLclampd
     ctypedef void GLvoid
+    ctypedef unsigned char GLubyte
 
     cdef int GL_SMOOTH
     cdef int GL_COLOR_BUFFER_BIT
@@ -78,6 +81,8 @@ cdef extern from "include_gl.h":
     cdef int GL_FLAT
     cdef int GL_FLOAT
     cdef int GL_POLYGON_SMOOTH
+
+    cdef int GL_VENDOR, GL_RENDERER, GL_VERSION, GL_EXTENSIONS
 
     cdef int GL_T2F_C4UB_V3F
 
@@ -118,6 +123,84 @@ cdef extern from "include_gl.h":
     cdef void glInterleavedArrays( GLenum format, GLsizei stride,
                                            GLvoid *pointer )
 
+    cdef const GLubyte *glGetString(GLenum name)
+
+    cdef int GL_NUM_EXTENSIONS
+
+    cdef const GLubyte* glGetStringi(GLenum name, GLint index)
+
+    cdef void glGetIntegerv(GLenum name, GLint* param)
+
+    cdef int GL_TEXTURE_RECTANGLE_ARB
+    cdef int GL_TEXTURE_RECTANGLE_NV
+
+
+
+def _get_gl_version():
+  """
+  ``gl_get_version()``
+
+  Returns the OpenGL version string.  Returns None if there is no context.
+  """
+  cdef char * string
+  string = <char*>glGetString(GL_VERSION)
+  if string == NULL:
+      return None
+  else:
+      return string
+
+def _have_version(major, minor=0, release=0):
+    '''Determine if a version of OpenGL is supported.
+
+    :Parameters:
+       `major` : int
+           The major revision number (typically 1 or 2).
+       `minor` : int
+           The minor revision number.
+       `release` : int
+           The release number.
+
+    :rtype: bool
+    :return: True if the requested or a later version is supported. if there is no context returns false
+    '''
+    gl_version = _get_gl_version()
+    if gl_version is None:
+        return False
+    ver = '{}.0.0'.format(int(float(gl_version.split(b' ', 1)[0])))
+    imajor, iminor, irelease = [int(float(v)) for v in ver.split('.', 3)[:3]]
+    return imajor > major or \
+      (imajor == major and iminor > minor) or \
+      (imajor == major and iminor == minor and irelease >= release)
+
+#gl_extension methods
+def _gl_get_ext_i(i):
+    cdef char * string
+    string = <char*>glGetStringi(GL_EXTENSIONS, i)
+    if string == NULL:
+        return None
+    else:
+        return string
+
+def _gl_get_ext():
+    cdef char * string
+    string = <char*>glGetString(GL_EXTENSIONS)
+    if string == NULL:
+        return None
+    else:
+        return string
+
+def _get_extensions():
+    cdef GLint num_extensions
+    gl_extensions = ()
+    if _get_gl_version():
+        if _have_version(3):
+            glGetIntegerv(GL_NUM_EXTENSIONS, &num_extensions)
+            gl_extensions = (_gl_get_ext_i(i) for i in range(num_extensions))
+        else:
+            gl_extensions = _gl_get_ext().split()
+        if gl_extensions:
+            gl_extensions = set(gl_extensions)
+    return gl_extensions
 
 from primitives cimport Quad, Point2d, float2
 
@@ -389,11 +472,18 @@ cdef class cSprite(cBaseSprite):
 
 
     cdef int _render(self) except -1:
-        if self._texture_id != 0:
-            glEnable(GL_TEXTURE_2D)
-            glBindTexture(GL_TEXTURE_2D, self._texture_id)
+        exts = _get_extensions()
+        if 'GL_ARB_texture_rectangle' in exts:
+            target = GL_TEXTURE_RECTANGLE_ARB
+        elif 'GL_NV_texture_rectangle' in exts:
+            target = GL_TEXTURE_RECTANGLE_NV
         else:
-            glDisable(GL_TEXTURE_2D)
+            target = GL_TEXTURE_2D
+        if self._texture_id != 0:
+            glEnable(target)
+            glBindTexture(target, self._texture_id)
+        else:
+            glDisable(target)
 
         cdef float color[4]
         READ_SLOT(&self._red, &color[0])
@@ -441,7 +531,7 @@ cdef class cSprite(cBaseSprite):
 
     def render(self):
         """
-        
+
         """
         self._render()
 
