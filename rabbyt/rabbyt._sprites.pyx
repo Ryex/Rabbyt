@@ -125,45 +125,6 @@ cdef extern from "include_gl.h":
 
     cdef const GLubyte *glGetString(GLenum name)
 
-
-
-def _get_gl_version():
-  """
-  ``gl_get_version()``
-
-  Returns the OpenGL version string.  Returns None if there is no context.
-  """
-  cdef char * string
-  string = <char*>glGetString(GL_VERSION)
-  if string == NULL:
-      return None
-  else:
-      return string
-
-def _have_version(major, minor=0, release=0):
-    '''Determine if a version of OpenGL is supported.
-
-    :Parameters:
-       `major` : int
-           The major revision number (typically 1 or 2).
-       `minor` : int
-           The minor revision number.
-       `release` : int
-           The release number.
-
-    :rtype: bool
-    :return: True if the requested or a later version is supported. if there is no context returns false
-    '''
-    gl_version = _get_gl_version()
-    if gl_version is None:
-        return False
-    ver = '{}.0.0'.format(int(float(gl_version.split(b' ', 1)[0])))
-    imajor, iminor, irelease = [int(float(v)) for v in ver.split('.', 3)[:3]]
-    return imajor > major or \
-      (imajor == major and iminor > minor) or \
-      (imajor == major and iminor == minor and irelease >= release)
-
-
 from primitives cimport Quad, Point2d, float2
 
 from _anims cimport cAnimable, AnimSlot, AnimSlot_s, READ_SLOT

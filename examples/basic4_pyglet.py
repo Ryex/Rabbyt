@@ -30,7 +30,7 @@ car.rot = rabbyt.lerp(0, 360, dt=3, extend="repeat")
 while not window.has_exit:
     clock.tick()
     window.dispatch_events()
-  
+
     rabbyt.clear((1,1,1))
 
     car.render()

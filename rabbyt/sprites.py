@@ -135,6 +135,8 @@ class Sprite(cSprite, BaseSprite):
         elif isinstance(texture, int):
             self.texture_id = texture
         elif hasattr(texture, "id"):
+            if hasattr(texture, "target"):
+                self.texture_target = texture.target
             self.texture_id = texture.id
             if hasattr(texture, "tex_coords"):
                 self.tex_shape = texture.tex_coords

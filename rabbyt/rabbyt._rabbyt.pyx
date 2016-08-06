@@ -131,7 +131,6 @@ def pick_texture_target():
             GL_TEXTURE_RECTANGLE_ARB = __import__("pyglet.gl",
                 {},{},['GL_TEXTURE_RECTANGLE_ARB']).GL_TEXTURE_RECTANGLE_ARB
             target = GL_TEXTURE_RECTANGLE_ARB
-            rectangle = True
         elif gl_info.have_extension('GL_NV_texture_rectangle'):
             GL_TEXTURE_RECTANGLE_NV = __import__("pyglet.gl",
                 {},{},['GL_TEXTURE_RECTANGLE_NV']).GL_TEXTURE_RECTANGLE_NV
