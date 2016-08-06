@@ -125,15 +125,6 @@ cdef extern from "include_gl.h":
 
     cdef const GLubyte *glGetString(GLenum name)
 
-    cdef int GL_NUM_EXTENSIONS
-
-    cdef const GLubyte* glGetStringi(GLenum name, GLint index)
-
-    cdef void glGetIntegerv(GLenum name, GLint* param)
-
-    cdef int GL_TEXTURE_RECTANGLE_ARB
-    cdef int GL_TEXTURE_RECTANGLE_NV
-
 
 
 def _get_gl_version():
@@ -172,35 +163,6 @@ def _have_version(major, minor=0, release=0):
       (imajor == major and iminor > minor) or \
       (imajor == major and iminor == minor and irelease >= release)
 
-#gl_extension methods
-def _gl_get_ext_i(i):
-    cdef char * string
-    string = <char*>glGetStringi(GL_EXTENSIONS, i)
-    if string == NULL:
-        return None
-    else:
-        return string
-
-def _gl_get_ext():
-    cdef char * string
-    string = <char*>glGetString(GL_EXTENSIONS)
-    if string == NULL:
-        return None
-    else:
-        return string
-
-def _get_extensions():
-    cdef GLint num_extensions
-    gl_extensions = ()
-    if _get_gl_version():
-        if _have_version(3):
-            glGetIntegerv(GL_NUM_EXTENSIONS, &num_extensions)
-            gl_extensions = (_gl_get_ext_i(i) for i in range(num_extensions))
-        else:
-            gl_extensions = _gl_get_ext().split()
-        if gl_extensions:
-            gl_extensions = set(gl_extensions)
-    return gl_extensions
 
 from primitives cimport Quad, Point2d, float2
 
@@ -348,8 +310,16 @@ cdef class cSprite(cBaseSprite):
     #cdef AnimSlot_s _u, _v
 
     #cdef int _texture_id
+    #cdef int _texture_target
 
     #cdef int _bounding_radius_is_explicit
+
+    def __init__(self):
+        self._texture_target = 0
+
+    def ensure_target(self):
+        if not self.texture_target:
+            self.texture_target = GL_TEXTURE_2D
 
     cdef _modify_slots(self):
         cBaseSprite._modify_slots(self)
@@ -419,7 +389,6 @@ cdef class cSprite(cBaseSprite):
         def __del__(self):
             self._bounding_radius_is_explicit = 0
 
-
     property shape:
         """
         The shape of the sprite.
@@ -470,20 +439,19 @@ cdef class cSprite(cBaseSprite):
         def __set__(self, int value):
             self._texture_id = value
 
+    property texture_target:
+        def __get__(self):
+            return self._texture_target
+        def __set__(self, int value):
+            self._texture_target = value
 
     cdef int _render(self) except -1:
-        exts = _get_extensions()
-        if 'GL_ARB_texture_rectangle' in exts:
-            target = GL_TEXTURE_RECTANGLE_ARB
-        elif 'GL_NV_texture_rectangle' in exts:
-            target = GL_TEXTURE_RECTANGLE_NV
-        else:
-            target = GL_TEXTURE_2D
+        self.ensure_target()
         if self._texture_id != 0:
-            glEnable(target)
-            glBindTexture(target, self._texture_id)
+            glEnable(self._texture_target)
+            glBindTexture(self._texture_target, self._texture_id)
         else:
-            glDisable(target)
+            glDisable(self._texture_target)
 
         cdef float color[4]
         READ_SLOT(&self._red, &color[0])

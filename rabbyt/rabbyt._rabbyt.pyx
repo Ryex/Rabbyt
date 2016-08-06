@@ -23,6 +23,8 @@ THE SOFTWARE.
 
 __author__ = "Matthew Marshall <matthew@matthewmarshall.org>"
 
+import sys
+
 from libc.stdio cimport printf
 
 cdef extern from "include_math.h":
@@ -97,85 +99,46 @@ cdef extern from "include_gl.h":
 
     cdef GLint gluBuild2DMipmaps( GLenum target, GLint internalFormat, GLsizei width, GLsizei height, GLenum format, GLenum type, void *data)
 
-    cdef int GL_NUM_EXTENSIONS
-
-    cdef const GLubyte* glGetStringi(GLenum name, GLint index)
-
-    cdef void glGetIntegerv(GLenum name, GLint* param)
-
-    cdef int GL_TEXTURE_RECTANGLE_ARB
-    cdef int GL_TEXTURE_RECTANGLE_NV
-
 
 from warnings import warn
 
 load_texture_file_hook = None
 
-def get_gl_version():
-  """
-  ``gl_get_version()``
+def pick_texture_target():
+    pyglet_flag = False
+    target = GL_TEXTURE_2D
 
-  Returns the OpenGL version string.  Returns None if there is no context.
-  """
-  cdef char * string
-  string = <char*>glGetString(GL_VERSION)
-  if string == NULL:
-      return None
-  else:
-      return string
+    pyglet = sys.modules.get("pyglet", None)
+    pygame = sys.modules.get("pygame", None)
 
-def have_version(major, minor=0, release=0):
-    '''Determine if a version of OpenGL is supported.
-
-    :Parameters:
-       `major` : int
-           The major revision number (typically 1 or 2).
-       `minor` : int
-           The minor revision number.
-       `release` : int
-           The release number.
-
-    :rtype: bool
-    :return: True if the requested or a later version is supported. if there is no context returns false
-    '''
-    gl_version = get_gl_version()
-    if gl_version is None:
-        return False
-    ver = '{}.0.0'.format(int(float(gl_version.split(b' ', 1)[0])))
-    imajor, iminor, irelease = [int(float(v)) for v in ver.split('.', 3)[:3]]
-    return imajor > major or \
-      (imajor == major and iminor > minor) or \
-      (imajor == major and iminor == minor and irelease >= release)
-
-#gl_extension methods
-def _gl_get_ext_i(i):
-    cdef char * string
-    string = <char*>glGetStringi(GL_EXTENSIONS, i)
-    if string == NULL:
-        return None
+    if pyglet and pygame:
+        # Both pygame and pyglet have been loaded, so we check if a pyglet
+        # context has been created.
+        get_current_context = __import__("pyglet.gl",
+                {},{},['get_current_context']).get_current_context
+        if get_current_context():
+            pyglet_flag = True
+        else:
+            target = GL_TEXTURE_2D
+    elif pyglet:
+        pyglet_flag = True
     else:
-        return string
+        target = GL_TEXTURE_2D
 
-def _gl_get_ext():
-    cdef char * string
-    string = <char*>glGetString(GL_EXTENSIONS)
-    if string == NULL:
-        return None
-    else:
-        return string
-
-def get_extensions():
-    cdef GLint num_extensions
-    gl_extensions = ()
-    if get_gl_version():
-      if have_version(3):
-          glGetIntegerv(GL_NUM_EXTENSIONS, &num_extensions)
-          gl_extensions = (_gl_get_ext_i(i) for i in range(num_extensions))
-      else:
-          gl_extensions = _gl_get_ext().split()
-      if gl_extensions:
-          gl_extensions = set(gl_extensions)
-    return gl_extensions
+    if pyglet_flag:
+        gl_info = __import__("pyglet.gl",{},{},['gl_info']).gl_info
+        if gl_info.have_extension('GL_ARB_texture_rectangle'):
+            GL_TEXTURE_RECTANGLE_ARB = __import__("pyglet.gl",
+                {},{},['GL_TEXTURE_RECTANGLE_ARB']).GL_TEXTURE_RECTANGLE_ARB
+            target = GL_TEXTURE_RECTANGLE_ARB
+            rectangle = True
+        elif gl_info.have_extension('GL_NV_texture_rectangle'):
+            GL_TEXTURE_RECTANGLE_NV = __import__("pyglet.gl",
+                {},{},['GL_TEXTURE_RECTANGLE_NV']).GL_TEXTURE_RECTANGLE_NV
+            target = GL_TEXTURE_RECTANGLE_NV
+        else:
+            target = GL_TEXTURE_2D
+    return target
 
 
 def set_load_texture_file_hook(callback):
@@ -344,13 +307,7 @@ def update_texture(texture_id, byte_string, size, type_='RGBA', filter=True,
     filter_type = GL_NEAREST
     if filter: filter_type = GL_LINEAR
 
-    exts = get_extensions()
-    if 'GL_ARB_texture_rectangle' in exts:
-        target = GL_TEXTURE_RECTANGLE_ARB
-    elif 'GL_NV_texture_rectangle' in exts:
-        target = GL_TEXTURE_RECTANGLE_NV
-    else:
-        target = GL_TEXTURE_2D
+    target = pick_texture_target()
 
     glBindTexture(target, texture_id)
     glTexParameteri(target, GL_TEXTURE_MAG_FILTER, filter_type)

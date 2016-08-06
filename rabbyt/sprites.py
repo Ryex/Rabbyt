@@ -1,4 +1,5 @@
 from rabbyt._sprites import cBaseSprite, cSprite
+from rabbyt._rabbyt import pick_texture_target
 from rabbyt.anims import anim_slot, swizzle, Animable
 from rabbyt.primitives import Quad
 
@@ -80,6 +81,7 @@ class Sprite(cSprite, BaseSprite):
     def __init__(self, texture=None, shape=None, tex_shape=None,
             **kwargs):
         BaseSprite.__init__(self)
+        cSprite.__init__(self)
 
         self.red = self.green = self.blue = self.alpha = 1
         self.x = self.y = 0
@@ -112,8 +114,14 @@ class Sprite(cSprite, BaseSprite):
             else:
                 raise ValueError("unexpected keyword argument %r" % name)
 
+    def ensure_target(self):
+        if not self.texture_target:
+            target = pick_texture_target()
+            self.texture_target = target
+
     def _get_texture(self):
         return self._tex_obj
+
     def _set_texture(self, texture):
         self._tex_obj = texture
         tex_size = None
