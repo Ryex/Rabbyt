@@ -15,6 +15,7 @@ deploy:
   provider: releases
   api_key:
     secure: fCc77zH6U3UeYgJLMyWSvJSuKqbPURKgGDosYD3F1ayaaCfU44RkZY1m54CdfEDFvqMfmhFcZJiCK9J1Rm3RHDfIcvfRqe8VsB/ehhQOvzfdzFeY6z5qOWw39smW9At2PeLQZ71AD/92cMZnJ9ueBmZOLTGYyG3yjqGSoaUoZo0=
+  skip_cleanup: true
   file: dist/*.whl
   on:
     repo: Ryex/Rabbyt
