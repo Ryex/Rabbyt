@@ -298,7 +298,7 @@ cdef class cAnimable:
 
     def set_anim_slot_locations_in_array(self, attr_names):
         cdef AnimSlot slot
-        cdef unsigned long temp
+        cdef unsigned long long temp
         for name in attr_names:
             if name in self.__class__.__base__._anim_slot_descriptor_names:
                 slot = getattr(self.__class__.__base__, name).get_slot(self)
@@ -408,7 +408,7 @@ cdef class AnimPointer(Anim):
     """
     cdef object _owner
     def __init__(self, pointer, owner=None):
-        cdef unsigned long address
+        cdef unsigned long long address
         if owner is None:
             owner = pointer
         if PyNumber_Check(pointer):
@@ -925,4 +925,3 @@ def to_Anim(v):
     else:
         dv = AnimConst(v)
     return dv
-
