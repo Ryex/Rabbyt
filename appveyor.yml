@@ -1,15 +1,9 @@
 environment:
-  global:
-    # SDK v7.0 MSVC Express 2008's SetEnv.cmd script will fail if the
-    # /E:ON and /V:ON options are not enabled in the batch script intepreter
-    # See: http://stackoverflow.com/a/13751649/163740
-    CMD_IN_ENV: "cmd /E:ON /V:ON /C .\\appveyor\\run_with_env.cmd"
 
   matrix:
     # Pre-installed Python versions, which Appveyor may upgrade to
     # a later point release.
     # See: http://www.appveyor.com/docs/installed-software#python
-
 
     - PYTHON: "C:\\Python34"
       PYTHON_VERSION: "3.4.x" # currently 3.4.3
@@ -72,17 +66,17 @@ install:
 
 build_script:
   # Build the compiled extension
-  - "%CMD_IN_ENV% python setup.py build_ext -i"
+  - "python setup.py build_ext -i"
 
 test_script:
   # Run the project tests
-  - "%CMD_IN_ENV% python setup.py test"
+  - "python setup.py test"
 
 after_test:
   # If tests are successful, create binary packages for the project.
-  - "%CMD_IN_ENV% python setup.py bdist_wheel"
-  - "%CMD_IN_ENV% python setup.py bdist_wininst"
-  - "%CMD_IN_ENV% python setup.py bdist_msi"
+  - "python setup.py bdist_wheel"
+  - "python setup.py bdist_wininst"
+  - "python setup.py bdist_msi"
   - ps: "ls dist"
 
 artifacts:
