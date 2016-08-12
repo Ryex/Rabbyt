@@ -55,7 +55,7 @@ split = re.compile("^Version", re.M).split(changelog)
 changes = '\n'.join(split[1].split("\n")[2:])
 last_version = split[2].split("\n",1)[0].strip()
 
-long_description = open("README").read() + ("""
+long_description = open("README.md").read() + ("""
 
 Changes from Version %s to Version %s
 ===============================================================
@@ -76,7 +76,7 @@ setup(
 
     packages = find_packages(),
     include_package_data = True,
-    exclude_package_data = {'':['README', 'examples', 'docs'],
+    exclude_package_data = {'':['README.md', 'examples', 'docs'],
             'rabbyt':['*.c', '*.h',  '*.pyx', '*.pxd']},
 
     ext_modules=[

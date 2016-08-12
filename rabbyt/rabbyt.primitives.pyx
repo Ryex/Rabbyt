@@ -268,7 +268,7 @@ cdef class Quad:
 
     cdef void _update_bounding_radius(self):
         self.bounding_radius = 0
-        cdef float brs
+        cdef double brs
         brs = 0
         for i from 0 <= i < 4:
             d = self.v[i].x**2 + self.v[i].y**2
