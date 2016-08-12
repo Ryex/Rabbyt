@@ -1,16 +1,20 @@
 language: python
 python:
-  - "2.6"
-  - "2.7"
-  - "3.4"
-  - "3.5"
-
-# command to install dependencies
+- '2.6'
+- '2.7'
+- '3.4'
+- '3.5'
 install:
-    - "pip install cython"
-    - "pip install wheel"
-# command to run tests
+- pip install cython
+- pip install wheel
 script:
-    - "python setup.py build_ext -i"
-    - "python setup.py test"
-    - "python setup.py bdist_wheel"
+- python setup.py build_ext -i
+- python setup.py test
+- python setup.py bdist_wheel
+deploy:
+  provider: releases
+  api_key:
+    secure: fCc77zH6U3UeYgJLMyWSvJSuKqbPURKgGDosYD3F1ayaaCfU44RkZY1m54CdfEDFvqMfmhFcZJiCK9J1Rm3RHDfIcvfRqe8VsB/ehhQOvzfdzFeY6z5qOWw39smW9At2PeLQZ71AD/92cMZnJ9ueBmZOLTGYyG3yjqGSoaUoZo0=
+  file: dist/*.whl
+  on:
+    repo: Ryex/Rabbyt
