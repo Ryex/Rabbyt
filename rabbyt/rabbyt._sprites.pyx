@@ -29,6 +29,8 @@ THE SOFTWARE.
 
 __author__ = "Matthew Marshall <matthew@matthewmarshall.org>"
 
+from libc.stdio cimport printf
+
 cdef extern from "include_math.h":
     cdef float fmodf(float x, float y)
     cdef float cosf(float x)
@@ -53,6 +55,7 @@ cdef extern from "include_gl.h":
     ctypedef double GLdouble
     ctypedef double GLclampd
     ctypedef void GLvoid
+    ctypedef unsigned char GLubyte
 
     cdef int GL_SMOOTH
     cdef int GL_COLOR_BUFFER_BIT
@@ -78,6 +81,8 @@ cdef extern from "include_gl.h":
     cdef int GL_FLAT
     cdef int GL_FLOAT
     cdef int GL_POLYGON_SMOOTH
+
+    cdef int GL_VENDOR, GL_RENDERER, GL_VERSION, GL_EXTENSIONS
 
     cdef int GL_T2F_C4UB_V3F
 
@@ -118,6 +123,7 @@ cdef extern from "include_gl.h":
     cdef void glInterleavedArrays( GLenum format, GLsizei stride,
                                            GLvoid *pointer )
 
+    cdef const GLubyte *glGetString(GLenum name)
 
 from primitives cimport Quad, Point2d, float2
 
@@ -265,8 +271,16 @@ cdef class cSprite(cBaseSprite):
     #cdef AnimSlot_s _u, _v
 
     #cdef int _texture_id
+    #cdef int _texture_target
 
     #cdef int _bounding_radius_is_explicit
+
+    def __init__(self):
+        self._texture_target = 0
+
+    def ensure_target(self):
+        if not self.texture_target:
+            self.texture_target = GL_TEXTURE_2D
 
     cdef _modify_slots(self):
         cBaseSprite._modify_slots(self)
@@ -336,7 +350,6 @@ cdef class cSprite(cBaseSprite):
         def __del__(self):
             self._bounding_radius_is_explicit = 0
 
-
     property shape:
         """
         The shape of the sprite.
@@ -387,13 +400,19 @@ cdef class cSprite(cBaseSprite):
         def __set__(self, int value):
             self._texture_id = value
 
+    property texture_target:
+        def __get__(self):
+            return self._texture_target
+        def __set__(self, int value):
+            self._texture_target = value
 
     cdef int _render(self) except -1:
+        self.ensure_target()
         if self._texture_id != 0:
-            glEnable(GL_TEXTURE_2D)
-            glBindTexture(GL_TEXTURE_2D, self._texture_id)
+            glEnable(self._texture_target)
+            glBindTexture(self._texture_target, self._texture_id)
         else:
-            glDisable(GL_TEXTURE_2D)
+            glDisable(self._texture_target)
 
         cdef float color[4]
         READ_SLOT(&self._red, &color[0])
@@ -441,7 +460,7 @@ cdef class cSprite(cBaseSprite):
 
     def render(self):
         """
-        
+
         """
         self._render()
 

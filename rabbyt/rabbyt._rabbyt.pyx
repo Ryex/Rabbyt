@@ -23,7 +23,9 @@ THE SOFTWARE.
 
 __author__ = "Matthew Marshall <matthew@matthewmarshall.org>"
 
+import sys
 
+from libc.stdio cimport printf
 
 cdef extern from "include_math.h":
     cdef float fmodf(float x, float y)
@@ -93,13 +95,51 @@ cdef extern from "include_gl.h":
     cdef void glDeleteTextures(GLsizei n, GLuint *textures)
     cdef void glTexEnvf(GLenum target, GLenum pname, GLfloat param)
 
-    cdef GLubyte *glGetString(GLenum name)
+    cdef const GLubyte *glGetString(GLenum name)
 
     cdef GLint gluBuild2DMipmaps( GLenum target, GLint internalFormat, GLsizei width, GLsizei height, GLenum format, GLenum type, void *data)
+
 
 from warnings import warn
 
 load_texture_file_hook = None
+
+def pick_texture_target():
+    pyglet_flag = False
+    target = GL_TEXTURE_2D
+
+    pyglet = sys.modules.get("pyglet", None)
+    pygame = sys.modules.get("pygame", None)
+
+    if pyglet and pygame:
+        # Both pygame and pyglet have been loaded, so we check if a pyglet
+        # context has been created.
+        get_current_context = __import__("pyglet.gl",
+                {},{},['get_current_context']).get_current_context
+        if get_current_context():
+            pyglet_flag = True
+        else:
+            target = GL_TEXTURE_2D
+    elif pyglet:
+        pyglet_flag = True
+    else:
+        target = GL_TEXTURE_2D
+
+    if pyglet_flag:
+        gl_info = __import__("pyglet.gl",{},{},['gl_info']).gl_info
+        if gl_info.have_extension('GL_ARB_texture_rectangle'):
+            GL_TEXTURE_RECTANGLE_ARB = __import__("pyglet.gl",
+                {},{},['GL_TEXTURE_RECTANGLE_ARB']).GL_TEXTURE_RECTANGLE_ARB
+            target = GL_TEXTURE_RECTANGLE_ARB
+        elif gl_info.have_extension('GL_NV_texture_rectangle'):
+            GL_TEXTURE_RECTANGLE_NV = __import__("pyglet.gl",
+                {},{},['GL_TEXTURE_RECTANGLE_NV']).GL_TEXTURE_RECTANGLE_NV
+            target = GL_TEXTURE_RECTANGLE_NV
+        else:
+            target = GL_TEXTURE_2D
+    return target
+
+
 def set_load_texture_file_hook(callback):
     """
     ``set_load_texture_file_hook(callback)``
@@ -265,14 +305,17 @@ def update_texture(texture_id, byte_string, size, type_='RGBA', filter=True,
 
     filter_type = GL_NEAREST
     if filter: filter_type = GL_LINEAR
-    glBindTexture(GL_TEXTURE_2D, texture_id)
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, filter_type)
+
+    target = pick_texture_target()
+
+    glBindTexture(target, texture_id)
+    glTexParameteri(target, GL_TEXTURE_MAG_FILTER, filter_type)
     if mipmap:
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_NEAREST)
-        gluBuild2DMipmaps(GL_TEXTURE_2D, channels, size[0], size[1], ptype, GL_UNSIGNED_BYTE, data)
+        glTexParameteri(target, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_NEAREST)
+        gluBuild2DMipmaps(target, channels, size[0], size[1], ptype, GL_UNSIGNED_BYTE, data)
     else:
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, filter_type)
-        glTexImage2D(GL_TEXTURE_2D, 0, ptype, size[0], size[1], 0, ptype, GL_UNSIGNED_BYTE, data)
+        glTexParameteri(target, GL_TEXTURE_MIN_FILTER, filter_type)
+        glTexImage2D(target, 0, ptype, size[0], size[1], 0, ptype, GL_UNSIGNED_BYTE, data)
 
 def unload_texture(texture_id):
     """

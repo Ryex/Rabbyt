@@ -19,6 +19,7 @@ cdef class cSprite(cBaseSprite):
     cdef AnimSlot_s _u, _v
 
     cdef int _texture_id
+    cdef int _texture_target
 
     cdef int _bounding_radius_is_explicit
 
