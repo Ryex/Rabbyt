@@ -103,5 +103,7 @@ setup(
         'Topic :: Software Development :: Libraries :: Python Modules',
     ],
 
-    cmdclass={'build_ext': build_ext}
+    cmdclass={'build_ext': build_ext},
+
+    test_suite="tests"
 )
