@@ -3,7 +3,7 @@ from primitives cimport Quad, Point2d, float2
 from _anims cimport cAnimable, AnimSlot, AnimSlot_s, READ_SLOT
 
 cdef class cBaseSprite(cAnimable):
-    cdef float _bounding_radius
+    cdef double _bounding_radius
     cdef AnimSlot_s     _x, _y, _rot
     cdef AnimSlot_s _red, _green, _blue, _alpha
     cdef AnimSlot_s _scale_x, _scale_y
