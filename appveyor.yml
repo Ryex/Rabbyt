@@ -93,7 +93,7 @@ deploy:
   provider: GitHub
   tag: $(appveyor_repo_tag_name)
   auth_token:
-    secure: fCc77zH6U3UeYgJLMyWSvJSuKqbPURKgGDosYD3F1ayaaCfU44RkZY1m54CdfEDFvqMfmhFcZJiCK9J1Rm3RHDfIcvfRqe8VsB/ehhQOvzfdzFeY6z5qOWw39smW9At2PeLQZ71AD/92cMZnJ9ueBmZOLTGYyG3yjqGSoaUoZo0=
+    secure: wte+4n1cT/BGy1wnu3/wLIKsWFWi+h/uY4CJpKY5sYrud2VWZmDhLD0es8sfzO+b
   artifact: dist\*.exe, dist\*.msi
   draft: false
   prerelease: false
