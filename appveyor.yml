@@ -14,7 +14,7 @@ environment:
       PYTHON_VERSION: "3.4.x" # currently 3.4.3
       PYTHON_ARCH: "32"
 
-    allow_failures:
+    - allow_failures:
         - PYTHON: "C:\\Python34-x64"
           PYTHON_VERSION: "3.4.x" # currently 3.4.3
           PYTHON_ARCH: "64"
