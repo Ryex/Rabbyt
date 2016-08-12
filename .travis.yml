@@ -11,12 +11,16 @@ script:
 after_success:
 - python setup.py bdist_wheel
 - ls dist
+before_deploy:
+  - export RELEASE_PKG_WHL=$(ls ./dist/*.whl)
+  - echo "deploying $RELEASE_PKG_WHL to GitHub releases"
 deploy:
   provider: releases
   api_key:
     secure: fCc77zH6U3UeYgJLMyWSvJSuKqbPURKgGDosYD3F1ayaaCfU44RkZY1m54CdfEDFvqMfmhFcZJiCK9J1Rm3RHDfIcvfRqe8VsB/ehhQOvzfdzFeY6z5qOWw39smW9At2PeLQZ71AD/92cMZnJ9ueBmZOLTGYyG3yjqGSoaUoZo0=
   skip_cleanup: true
-  file: dist/*.whl
+  file:
+      - "${RELEASE_PKG_WHL}"
   on:
     repo: Ryex/Rabbyt
     tags: true
