@@ -94,7 +94,7 @@ deploy:
   provider: GitHub
   auth_token:
     secure: fCc77zH6U3UeYgJLMyWSvJSuKqbPURKgGDosYD3F1ayaaCfU44RkZY1m54CdfEDFvqMfmhFcZJiCK9J1Rm3RHDfIcvfRqe8VsB/ehhQOvzfdzFeY6z5qOWw39smW9At2PeLQZ71AD/92cMZnJ9ueBmZOLTGYyG3yjqGSoaUoZo0=
-  artifact: "dist\*.ext , dist\*.msi"
+  artifact: dist\*.ext , dist\*.msi
   draft: false
   prerelease: false
   on:
