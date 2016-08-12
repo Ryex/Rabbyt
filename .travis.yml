@@ -1,0 +1,16 @@
+language: python
+python:
+  - "2.6"
+  - "2.7"
+  - "3.4"
+  - "3.5"
+
+# command to install dependencies
+install:
+    - "pip install cython"
+    - "pip install wheel"
+# command to run tests
+script:
+    - "python setup.py build_ext -i"
+    - "python setup.py test"
+    - "python setup.py bdist_wheel"
