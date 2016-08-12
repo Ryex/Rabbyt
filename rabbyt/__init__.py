@@ -26,7 +26,7 @@ THE SOFTWARE.
 """)
 
 __author__ = "Matthew Marshall <matthew@matthewmarshall.org>"
-__version__ = "0.8.3"
+__version__ = "0.8.4"
 
 import heapq
 import os.path
