@@ -94,7 +94,7 @@ deploy:
   tag: $(appveyor_repo_tag_name)
   auth_token:
     secure: wte+4n1cT/BGy1wnu3/wLIKsWFWi+h/uY4CJpKY5sYrud2VWZmDhLD0es8sfzO+b
-  artifact: dist\*.exe, dist\*.msi
+  artifact: dist\*.whl
   draft: false
   prerelease: false
   description: ''
