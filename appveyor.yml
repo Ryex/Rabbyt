@@ -81,20 +81,19 @@ test_script:
 after_test:
   # If tests are successful, create binary packages for the project.
   - "%CMD_IN_ENV% python setup.py bdist_wheel"
-  - "%CMD_IN_ENV% python setup.py bdist_wininst"
-  - "%CMD_IN_ENV% python setup.py bdist_msi"
   - ps: "ls dist"
 
 artifacts:
   # Archive the generated packages in the ci.appveyor.com build report.
-  - path: dist\*
+  - path: dist\*.whl
+    name: wheel
 
 deploy:
   provider: GitHub
   tag: $(appveyor_repo_tag_name)
   auth_token:
     secure: wte+4n1cT/BGy1wnu3/wLIKsWFWi+h/uY4CJpKY5sYrud2VWZmDhLD0es8sfzO+b
-  artifact: dist\*.whl
+  artifact: wheel
   draft: false
   prerelease: false
   description: ''
